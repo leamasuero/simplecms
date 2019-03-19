@@ -72,7 +72,10 @@ license. Please see the [license file](license.md) for more information.
         //...
     },
   ``` 
-
+* Ejecutar un composer dump-autoload
+  ``` bash
+    composer dump-autoload
+  ```     
 * Agregar mapping de entidaddes en el config/doctrine.php (VER DE QUITAR ESTO)
   ``` php
     'paths'         => [

@@ -1,0 +1,92 @@
+<?php
+
+namespace Lebenlabs\SimpleCMS\Repositories;
+
+use Doctrine\ORM\EntityRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Lebenlabs\SimpleCMS\Models\Publicacion;
+
+class PublicacionRepository extends EntityRepository
+{
+
+    use \LaravelDoctrine\ORM\Pagination\Paginatable;
+
+    /**
+     *
+     * @param string $q
+     * @param int $perPage
+     * @return LengthAwarePaginator
+     */
+    public function buscarPublicadas($q, $perPage = 10)
+    {
+        return $this->buscar($q, $perPage, true);
+    }
+
+    /**
+     *
+     * @param string $q
+     * @param int $perPage
+     * @param boolean $publicada
+     * @return LengthAwarePaginator
+     */
+    public function buscar($q, $perPage = 10, $publicada = null)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('Publicacion')
+            ->from(Publicacion::class, 'Publicacion')
+            ->leftJoin('Publicacion.categoria', 'Categoria')
+            ->orderBy('Publicacion.id', 'desc');
+
+        if ($publicada) {
+            $qb->andWhere('Publicacion.publicada = :publicada')
+                ->setParameter('publicada', $publicada);
+        }
+
+        if ($q) {
+            $qb->andWhere('Publicacion.titulo LIKE :q')
+                ->orWhere('Publicacion.cuerpo LIKE :q')
+                ->orWhere('Categoria.nombre LIKE :q')
+                ->setParameter('q', "%{$q}%");
+        }
+
+        return $this->paginate($qb->getQuery(), $perPage);
+    }
+
+    /**
+     *
+     * @param string $slug
+     * @param int $perPage
+     * @return LengthAwarePaginator
+     */
+    public function buscarPublicacionesByCategoriaSlug($slug, $perPage = 10)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('Publicacion')
+            ->from(Publicacion::class, 'Publicacion')
+            ->leftJoin('Publicacion.categoria', 'Categoria')
+            ->where('Categoria.slug = :slug')
+            ->setParameter('slug', $slug)
+            ->orderBy('Publicacion.id', 'desc');
+
+        return $this->paginate($qb->getQuery(), $perPage);
+    }
+
+    /**
+     * Busca las publicaciones destacadas devolviendo por
+     * defecto 5 en caso de que no se esepcifique
+     *
+     * @param int $perPage
+     * @return LengthAwarePaginator
+     */
+    public function findDestacadas($perPage = 5)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('Publicacion')
+            ->from(Publicacion::class, 'Publicacion')
+            ->where('Publicacion.destacada = true')
+            ->andWhere('Publicacion.publicada = true')
+            ->orderBy('Publicacion.id', 'desc');
+
+        return $this->paginate($qb->getQuery(), $perPage);
+    }
+}

@@ -59,8 +59,22 @@ license. Please see the [license file](license.md) for more information.
 
 
 
-## Cosas a editar
-
+## Instalación / Configuración
+* Requiere que el SimpleStorageService este instalado (VER DE CREAR ESTE PACKAGE)
+* Agregar submodulo en la carpeta packages/Lebenlabs 
+  ``` bash
+    git submodule add https://github.com/leamasuero/simplecms  
+  ``` 
+* Editar composer.json agregando (y/o corroborando) lo siguiente:
+  ``` php    
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./packages/Lebenlabs/simplecms/"
+        }
+    ]
+  ``` 
 * Agregar package en composer.json (Ver de mejorar esto)
   ``` php    
     "autoload": {
@@ -72,6 +86,22 @@ license. Please see the [license file](license.md) for more information.
         //...
     },
   ``` 
+* Ejecutar composer require del package (No fue probado)
+  ``` bash    
+    composer require lebenlabs/simplecms:dev-master
+  ``` 
+* Agregar Service provider en config/app.pp
+  ``` php   
+    /**
+     * Lebenlabs\SimpleCMS Package
+     */
+     Lebenlabs\SimpleCMS\SimpleCMSServiceProvider::class,
+  ```         
+
+* Ejecutar un composer install (No fue probado)
+  ``` bash
+    composer install
+  ```       
 * Ejecutar un composer dump-autoload
   ``` bash
     composer dump-autoload
@@ -84,7 +114,15 @@ license. Please see the [license file](license.md) for more information.
         base_path('packages/Lebenlabs/SimpleCMS/src/Models'),
     ],
   ``` 
-
+* Correr publish del package.Elegir el package en la pregunta (Provider: Lebenlabs\SimpleCMS\SimpleCMSServiceProvider)
+  ``` bash
+      php artisan vendor:publish
+  ``` 
+* Ejecutar un composer dump-autoload
+  ``` bash
+    composer dump-autoload
+  ```       
+* Ejecutar migrations
 * Correr seeds package  
   ``` bash
       php artisan db:seed --class='Lebenlabs\SimpleCMS\Database\Seeds\PackageDatabaseSeeder'

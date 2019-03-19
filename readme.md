@@ -61,8 +61,20 @@ license. Please see the [license file](license.md) for more information.
 
 ## Cosas a editar
 
+* Agregar package en composer.json (Ver de mejorar esto)
+  ``` php    
+    "autoload": {
+        "psr-4": {
+            // ....
+
+            "Lebenlabs\\SimpleCMS\\": "packages/Lebenlabs/simplecms/src"
+        },
+        //...
+    },
+  ``` 
+
 * Agregar mapping de entidaddes en el config/doctrine.php (VER DE QUITAR ESTO)
-  ``` bash
+  ``` php
     'paths'         => [
         ....
     

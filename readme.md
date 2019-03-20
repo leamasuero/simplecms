@@ -148,7 +148,7 @@ license. Please see the [license file](license.md) for more information.
           base_path('app/Models'),
 
           // SimpleStorage package
-          base_path('SimpleStorage/Models'),
+          base_path('packages/Lebenlabs/simplestorage/src/Models'),
 
           // Lebenlabs/SimpleCMS package
           base_path('packages/Lebenlabs/simplecms/src/Models'),
@@ -163,33 +163,61 @@ license. Please see the [license file](license.md) for more information.
   ``` php
       /* --------------------------*/
       
-      abstract class Usuario implements Authenticatable, CanResetPassword, CanEditMenu, CanEditMenuItem
+      abstract class Usuario implements Authenticatable, CanResetPassword, CanEditMenu, CanEditMenuItem, CanManagePublicaciones, CanViewPublicacion
       
       /* --------------------------*/
       
 
-        /**
-         * Returns true if the Entity can edit SimpleCMS
-         *
-         * @return boolean
-         */
-       public function canEditMenu()
-       {
-           return $this->esAdministrador();
-       }
-        
-       /**
-         * Returns true if the Entity can edit SimpleCMS Item
-         *
-         * @return bool
-        */
-       public function canEditMenuItem()
-       {
-           return $this->esAdministrador();
-       }
+    /**
+     * Returns true if the Entity can edit Menu
+     *
+     * @return boolean
+     */
+    public function canEditMenu()
+    {
+        return $this->esAdministrador();
+    }
+
+    /**
+     * Returns true if the Entity can edit Menu Item
+     *
+     * @return bool
+     */
+    public function canEditMenuItem()
+    {
+        return $this->esAdministrador();
+    }
+
+    /**
+     * Returns true if the Entity can manage publicaciones
+     *
+     * @return bool
+     */
+    public function canManagePublicaciones()
+    {
+        return $this->esAdministrador();
+    }
+
+    /**
+     * @param Publicacion $publicacion
+     * @return bool
+     */
+    public function canViewPublicacion(Publicacion $publicacion)
+    {
+        if ($this->esAdministrador()) {
+            return true;
+        }
+
+        if ($publicacion->getPublicada()) {
+            return true;
+        }
+
+        return false;
+    }
     
        /* --------------------------*/      
       
   ``` 
   
 
+* Generar doctrine proxies

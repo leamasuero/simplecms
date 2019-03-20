@@ -2,7 +2,6 @@
 
 namespace Lebenlabs\SimpleCMS\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Doctrine\ORM\EntityManager;
 use Exception;
 use Illuminate\Http\Request;
@@ -31,7 +30,6 @@ class ArchivosController extends Controller
 
     public function __construct(EntityManager $em, SimpleStorageService $storage)
     {
-        parent::__construct();
         $this->em = $em;
 
         // Get connection to use transaction

@@ -2,13 +2,10 @@
 
 namespace Lebenlabs\SimpleCMS\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Doctrine\ORM\EntityManager;
 use Exception;
-use Intervention\Image\ImageManager;
 use Lebenlabs\SimpleCMS\Http\Middleware\CanManagePublicaciones;
 use Lebenlabs\SimpleCMS\Http\Requests\StoreImagenRequest;
-use Lebenlabs\SimpleCMS\Models\Imagen;
 use Lebenlabs\SimpleCMS\SimpleCMS;
 use Storage;
 
@@ -31,7 +28,6 @@ class ImagenesController extends Controller
 
     public function __construct(EntityManager $em, SimpleCMS $simpleCMSProvider)
     {
-        parent::__construct();
         $this->em = $em;
 
         // Get connection to use transaction

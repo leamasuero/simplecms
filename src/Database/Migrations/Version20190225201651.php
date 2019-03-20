@@ -1,6 +1,6 @@
 <?php
 
-namespace Lebenlabs\SimpleCMS\Database\Migrations;
+namespace Database\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema as Schema;

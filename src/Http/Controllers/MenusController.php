@@ -2,7 +2,6 @@
 
 namespace Lebenlabs\SimpleCMS\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Lebenlabs\SimpleCMS\Http\Middleware\CanEditMenu;
 use Lebenlabs\SimpleCMS\SimpleCMS;
 
@@ -16,7 +15,6 @@ class MenusController extends Controller
 
     public function __construct(SimpleCMS $simpleCMSProvider)
     {
-        parent::__construct();
         $this->simpleCMSProvider = $simpleCMSProvider;
         $this->middleware('web');
         $this->middleware(CanEditMenu::class);

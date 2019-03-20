@@ -2,7 +2,6 @@
 
 namespace Lebenlabs\SimpleCMS\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Exception;
@@ -33,7 +32,6 @@ class MenuItemsController extends Controller
 
     public function __construct(EntityManager $em, SimpleCMS $simpleCMSProvider)
     {
-        parent::__construct();
         $this->em = $em;
 
         // Get connection to use transaction

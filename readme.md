@@ -121,11 +121,43 @@ license. Please see the [license file](license.md) for more information.
 * Ejecutar un composer dump-autoload
   ``` bash
     composer dump-autoload
-  ```       
+  ```         
+* Config de filesystems
+  ``` php  
+
+      // Added for SimpleStorage package
+      'archivos' => [
+          'driver' => 'local',
+          'root' => storage_path('app/archivos'),
+      ],
+  
+      // Added for Lebenlabs\SimpleCMS package
+      'simplecms_imagenes' => [
+          'driver' => 'local',
+          'root' => storage_path('app/public/lebenlabs_simplecms/imagenes/publicaciones'),
+      ],
+  ```   
 * Ejecutar migrations
 * Correr seeds package  
   ``` bash
       php artisan db:seed --class='Lebenlabs\SimpleCMS\Database\Seeds\PackageDatabaseSeeder'
+  ``` 
+* Configurar config/doctrine.php
+  ``` php
+        'paths'         => [
+          base_path('app/Models'),
+
+          // SimpleStorage package
+          base_path('SimpleStorage/Models'),
+
+          // Lebenlabs/SimpleCMS package
+          base_path('packages/Lebenlabs/simplecms/src/Models'),
+      ],  
+  
+      'extensions'                 => [
+        // ....
+        LaravelDoctrine\Extensions\Sluggable\SluggableExtension::class,
+  
   ``` 
 * En el authenticable
   ``` php
@@ -160,11 +192,4 @@ license. Please see the [license file](license.md) for more information.
       
   ``` 
   
-  * Config de filesystems
-  ``` php  
-      // Added for Lebenlabs\SimpleCMS package
-      'simplecms_imagenes' => [
-          'driver' => 'local',
-          'root' => storage_path('app/public/lebenlabs_simplecms/imagenes/publicaciones'),
-      ],
-  ``` 
+

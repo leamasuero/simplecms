@@ -221,3 +221,9 @@ license. Please see the [license file](license.md) for more information.
   
 
 * Generar doctrine proxies
+* Incluir SimpleCMS Menú item en backend
+  ``` php
+    {{--Laravel Package - Lebenlabs\SimpleCMS--}}
+    @include('Lebenlabs/SimpleCMS::Partials.header_shortcut')
+  ```
+* Editar las vistas que fueron publisheadas mas arriba 

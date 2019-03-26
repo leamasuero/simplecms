@@ -169,7 +169,7 @@
   ```
 * Editar las vistas que fueron publisheadas mas arriba 
 * Agregar en los layouts los CSS/JS 
-  ``` html
+  ``` php
 
     {{--Laravel Package - Lebenlabs\SimpleCMS - CSS --}}
     @include('Lebenlabs/SimpleCMS::Partials.header_css')

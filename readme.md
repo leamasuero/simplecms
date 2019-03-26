@@ -179,3 +179,12 @@
     {{--Laravel Package - Lebenlabs\SimpleCMS - JS --}}
     @include('Lebenlabs/SimpleCMS::Partials.header_js')
   ```
+* Generar JS/CSS del package. Agregar las lineas a webpack.mix.js
+  ``` js
+      // Lebenlabs - SimpleCMS - JS
+    .js('vendor/lebenlabs/simplecms/src/Resources/Assets/js/SimpleCMS', 'public/js')
+    .js('vendor/lebenlabs/simplecms/src/Resources/Assets/js/SummernoteHelper', 'public/js')
+    .js('vendor/lebenlabs/simplecms/src/Resources/Assets/js/bootstrap-datetimepicker.min', 'public/js')
+    // Lebenlabs - SimpleCMS - CSS
+    .sass('vendor/lebenlabs/simplecms/src/Resources/Assets/css/bootstrap-datetimepicker.min', 'public/css')
+  ```

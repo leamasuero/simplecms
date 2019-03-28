@@ -1,7 +1,6 @@
 {
     "name": "lebenlabs/simplecms",
     "description": "Package para CMS simplificado",
-    "license": "license",
     "authors": [
         {
             "name": "Lebenlabs",

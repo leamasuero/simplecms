@@ -190,6 +190,18 @@
   ```
 * Cargar los menu items que se pretendan utilizar utilizando un view composer registrado desde la aplicación (IMPROVE: seleccionar determinado menu - posibilidad de varios)
   ``` php
-    $view->with('rootMenuItems', $this->simpleCMS->findAllRootMenuItems());
+    // ComposerServiceProvider
+    public function boot()
+    {
+        View::composer(
+            'Lebenlabs/SimpleCMS::Partials.Menu.show', SimpleCMSViewComposer::class
+        );
+    }
+  
+    // SimpleCMSViewComposer
+    public function compose(View $view)
+    {
+        $view->with('rootMenuItems', $this->simpleCMS->findAllRootMenuItems());
+    }
 
   ``` 

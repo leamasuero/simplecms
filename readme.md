@@ -188,7 +188,7 @@
     // Lebenlabs - SimpleCMS - CSS
     .sass('vendor/lebenlabs/simplecms/src/Resources/Assets/css/bootstrap-datetimepicker.min', 'public/css')
   ```
-* Cargar los menu items que se pretendan utilizar (IMPROVE: seleccionar determinado menu - posibilidad de varios)
+* Cargar los menu items que se pretendan utilizar utilizando un view composer registrado desde la aplicación (IMPROVE: seleccionar determinado menu - posibilidad de varios)
   ``` php
     $view->with('rootMenuItems', $this->simpleCMS->findAllRootMenuItems());
 

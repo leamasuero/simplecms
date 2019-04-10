@@ -62,7 +62,9 @@ class ImagenesService
         $this->imagenesStorage->put($imagen->getFilename(), $interventionImage->encode());
 
         // Thumbnail
-        $interventionImage->fit(500, 333);
+        $thumbWidth =  config('simplecms.imagenes.thumbnail.width', 500);
+        $thumbHeight =  config('simplecms.imagenes.thumbnail.height', 500);
+        $interventionImage->fit($thumbWidth, $thumbHeight);
         $this->imagenesStorage->put($imagen->getThumbFilename(), $interventionImage->encode());
 
         //Set de la imagen en Publicacion

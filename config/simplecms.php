@@ -23,4 +23,11 @@ return [
             'preview_publicacion' => 'img/noimagen-difuminadoconico.png'
         ]
     ],
+    'imagenes' => [
+        'thumbnail' => [
+            'generate'  => true,
+            'width'     => 500,
+            'height'    => 333
+        ],
+    ]
 ];

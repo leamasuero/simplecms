@@ -29,5 +29,11 @@ return [
             'width'     => 500,
             'height'    => 333
         ],
+    ],
+    'publicaciones' => [
+        'frontend'  => [
+            'indexLimit' => 5,
+            'indexByCategoryLimit' => 5
+        ]
     ]
 ];

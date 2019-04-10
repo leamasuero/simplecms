@@ -222,7 +222,8 @@ class PublicacionesController extends Controller
      */
     public function publicIndex()
     {
-        $publicaciones = $this->simpleCMSProvider->buscarPublicacionesPublicadas(null, 5);
+        $publicacionesFrontendLimit =  config('simplecms.publicaciones.frontend.indexLimit', 5);
+        $publicaciones = $this->simpleCMSProvider->buscarPublicacionesPublicadas(null, $publicacionesFrontendLimit);
         $categorias = $this->simpleCMSProvider->findAllCategoriasPublicadasIndexed();
 
         return view('Lebenlabs/SimpleCMS::Publicaciones.public-index', compact('publicaciones', 'categorias'));
@@ -239,7 +240,8 @@ class PublicacionesController extends Controller
             abort(404);
         }
 
-        $publicaciones = $this->simpleCMSProvider->buscarPublicacionesByCategoriaSlug($slug, 5);
+        $publicacionesFrontendLimit =  config('simplecms.publicaciones.frontend.indexByCategoryLimit', 5);
+        $publicaciones = $this->simpleCMSProvider->buscarPublicacionesByCategoriaSlug($slug, $publicacionesFrontendLimit);
         $categorias = $this->simpleCMSProvider->findAllCategoriasPublicadasIndexed();
 
         return view('Lebenlabs/SimpleCMS::Publicaciones.public-index-by-categoria-slug', compact('publicaciones', 'categorias', 'categoria'));

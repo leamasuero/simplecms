@@ -1,60 +1,16 @@
 # SimpleCMS
 
 ## Instalación / Configuración
-* Requiere que el SimpleStorageService este instalado (VER DE CREAR ESTE PACKAGE)
-* Agregar submodulo en la carpeta packages/Lebenlabs 
+* Instalar package
   ``` bash
-    git submodule add https://github.com/leamasuero/simplecms  
-  ``` 
-* Editar composer.json agregando (y/o corroborando) lo siguiente:
-  ``` php    
-    "minimum-stability": "dev",
-    "repositories": [
-        {
-            "type": "path",
-            "url": "./packages/Lebenlabs/simplecms/"
-        }
-    ]
-  ``` 
-* Agregar package en composer.json (Ver de mejorar esto)
-  ``` php    
-    "autoload": {
-        "psr-4": {
-            // ....
+    composer require "lebenlabs/simplecms=0.0.*"
+  ```
 
-            "Lebenlabs\\SimpleCMS\\": "packages/Lebenlabs/simplecms/src"
-        },
-        //...
-    },
-  ``` 
-* Ejecutar composer require del package (No fue probado)
-  ``` bash    
-    composer require lebenlabs/simplecms:dev-master
-  ``` 
-* Agregar Service provider en config/app.pp
-  ``` php   
-    /**
-     * Lebenlabs\SimpleCMS Package
-     */
-     Lebenlabs\SimpleCMS\SimpleCMSServiceProvider::class,
-  ```         
-
-* Ejecutar un composer install (No fue probado)
-  ``` bash
-    composer install
-  ```       
 * Ejecutar un composer dump-autoload
   ``` bash
     composer dump-autoload
   ```     
-* Agregar mapping de entidaddes en el config/doctrine.php (VER DE QUITAR ESTO)
-  ``` php
-    'paths'         => [
-        ....
-    
-        base_path('packages/Lebenlabs/SimpleCMS/src/Models'),
-    ],
-  ``` 
+
 * Correr publish del package.Elegir el package en la pregunta (Provider: Lebenlabs\SimpleCMS\SimpleCMSServiceProvider)
   ``` bash
       php artisan vendor:publish
@@ -79,27 +35,11 @@
       ],
   ```   
 * Ejecutar migrations
-* Correr seeds package  
+* Correr seeds package (opcional)  
   ``` bash
       php artisan db:seed --class='Lebenlabs\SimpleCMS\Database\Seeds\PackageDatabaseSeeder'
   ``` 
-* Configurar config/doctrine.php
-  ``` php
-        'paths'         => [
-          base_path('app/Models'),
 
-          // SimpleStorage package
-          base_path('packages/Lebenlabs/simplestorage/src/Models'),
-
-          // Lebenlabs/SimpleCMS package
-          base_path('packages/Lebenlabs/simplecms/src/Models'),
-      ],  
-  
-      'extensions'                 => [
-        // ....
-        LaravelDoctrine\Extensions\Sluggable\SluggableExtension::class,
-  
-  ``` 
 * En el authenticable
   ``` php
       /* --------------------------*/

@@ -11,7 +11,7 @@ use Lebenlabs\SimpleCMS\Http\Middleware\CanEditMenu;
 use Lebenlabs\SimpleCMS\Http\Middleware\CanViewPublicacion;
 use Lebenlabs\SimpleCMS\Http\Middleware\MenuMenuItemExisteYPertenece;
 use Lebenlabs\SimpleCMS\Http\Middleware\PublicacionExiste;
-use SimpleStorage\Services\SimpleStorageService;
+use Lebenlabs\SimpleStorage\Services\SimpleStorageService;
 
 class SimpleCMSServiceProvider extends ServiceProvider
 {

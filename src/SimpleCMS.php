@@ -16,7 +16,7 @@ use Lebenlabs\SimpleCMS\Services\ImagenesService;
 use Lebenlabs\SimpleCMS\Services\MenuItemsService;
 use Lebenlabs\SimpleCMS\Services\MenuService;
 use Lebenlabs\SimpleCMS\Services\PublicacionesService;
-use SimpleStorage\Services\SimpleStorageService;
+use Lebenlabs\SimpleStorage\Services\SimpleStorageService;
 
 /**
  * Sirve como proxy Service para llamadas a los demas Service

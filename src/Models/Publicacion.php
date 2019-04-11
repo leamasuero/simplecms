@@ -6,8 +6,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Lebenlabs\SimpleCMS\Interfaces\Shareable;
-use SimpleStorage\Exceptions\UnStorableItemException;
-use SimpleStorage\Interfaces\Storable;
+use Lebenlabs\SimpleStorage\Exceptions\UnStorableItemException;
 
 /**
  * @ORM\Entity(repositoryClass="Lebenlabs\SimpleCMS\Repositories\PublicacionRepository")

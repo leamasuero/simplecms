@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Lebenlabs\SimpleCMS\Http\Middleware\CanManagePublicaciones;
 use Lebenlabs\SimpleCMS\Http\Requests\StoreArchivosRequest;
-use SimpleStorage\Services\SimpleStorageService;
+use Lebenlabs\SimpleStorage\Services\SimpleStorageService;
 
 class ArchivosController extends Controller
 {
@@ -121,16 +121,18 @@ class ArchivosController extends Controller
     /**
      * @param $id
      * @return \Illuminate\Http\Response
-     * @throws \SimpleStorage\Exceptions\NotFoundException
      */
     public function show($id)
     {
         $storageItem = $this->storage->find($id);
 
         return response()->make(
-            $storageItem->getArchivo(), Response::HTTP_OK, [
-            'Content-Type' => $this->storage->mimeType($storageItem),
-            'Content-Disposition' => "attachment;filename={$storageItem->getOriginalFilename()}"
-        ]);
+            $storageItem->getArchivo(),
+            Response::HTTP_OK,
+            [
+                'Content-Type' => $this->storage->mimeType($storageItem),
+                'Content-Disposition' => "attachment;filename={$storageItem->getOriginalFilename()}"
+            ]
+        );
     }
 }

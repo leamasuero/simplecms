@@ -12,7 +12,7 @@ use Lebenlabs\SimpleCMS\Http\Requests\StorePublicacionRequest;
 use Lebenlabs\SimpleCMS\Http\Requests\UpdatePublicacionRequest;
 use Lebenlabs\SimpleCMS\Models\Publicacion;
 use Lebenlabs\SimpleCMS\SimpleCMS;
-use SimpleStorage\Services\SimpleStorageService;
+use Lebenlabs\SimpleStorage\Services\SimpleStorageService;
 
 class PublicacionesController extends Controller
 {

@@ -28,9 +28,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Lebenlabs\\SimpleCMS\\": "src/",
-
-            "Lebenlabs\\SimpleStorage\\": "packages/Lebenlabs/simplestorage/src"
+            "Lebenlabs\\SimpleCMS\\": "src/"
         }
     },
     "autoload-dev": {

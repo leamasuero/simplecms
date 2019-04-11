@@ -100,7 +100,19 @@
       
   ``` 
   
+* Agregar mapping de entidaddes en el config/doctrine.php 
+  ``` php
+    'paths'         => [
+       ....
+  
+        // Lebenlabs/SimpleCMS package
+        base_path('vendor/lebenlabs/simplecms/src/Models'),
 
+        // SimpleStorage package
+        base_path('vendor/lebenlabs/simplestorage/src/Models'),
+      ....
+  ]
+  ```
 * Generar doctrine proxies
 * Incluir SimpleCMS Menú item en backend
   ``` php

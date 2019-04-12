@@ -37,6 +37,14 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="col-md-4 control-label" for="atributos[exclusivo]">Exclusivo(s)?</label>
+                            <div class="input-group col-md-6">
+                                {{ Form::checkbox('atributos[exclusivo]', 1, old('atributos[exclusivo]'), ['id' => 'atributos[exclusivo]']) }}
+                            </div>
+                            <small>Los archivos exclusivos requieren que el usuario este autenticado y verificado para poder ser descargados.</small>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-md-4 control-label"></label>
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
@@ -72,6 +80,12 @@
                                 <a href="{{ route('simplecms.public.archivos.show', $archivo->getId()) }} ">{{ $archivo }}</a>
                                 <div class="clearfix"></div>
                             </form>
+
+                            {{--Resolver esto para bootstrap 3.4 - Toggle de exclusividad --}}
+                            {{--<div class="custom-control custom-switch">--}}
+                                {{--<input type="checkbox" class="custom-control-input" id="customSwitch1">--}}
+                                {{--<label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>--}}
+                            {{--</div>                            --}}
                         </div>
                         @endforeach
                     </div>

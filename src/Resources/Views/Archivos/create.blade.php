@@ -37,6 +37,14 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="col-md-4 control-label" for="atributos[exclusivo]">Exclusivo(s)?</label>
+                            <div class="input-group col-md-6">
+                                {{ Form::checkbox('atributos[exclusivo]', 1, old('atributos[exclusivo]'), ['id' => 'atributos[exclusivo]']) }}
+                            </div>
+                            <small>Los archivos exclusivos requieren que el usuario este autenticado y verificado para poder ser descargados.</small>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-md-4 control-label"></label>
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">

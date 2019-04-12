@@ -79,9 +79,10 @@ class ArchivosController extends Controller
         try {
 
             $this->connection->beginTransaction();
+            $atributos = $request->get('atributos', []);
 
             foreach ($request->file('archivos') as $archivo) {
-                $this->storage->put($entidad, $archivo);
+                $this->storage->put($entidad, $archivo, $atributos);
             }
 
             $this->connection->commit();
@@ -121,6 +122,7 @@ class ArchivosController extends Controller
     /**
      * @param $id
      * @return \Illuminate\Http\Response
+     * @throws \Lebenlabs\SimpleStorage\Exceptions\NotFoundException
      */
     public function show($id)
     {

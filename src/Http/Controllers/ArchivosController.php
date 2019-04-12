@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Lebenlabs\SimpleCMS\Http\Middleware\CanManagePublicaciones;
 use Lebenlabs\SimpleCMS\Http\Requests\StoreArchivosRequest;
 use Lebenlabs\SimpleStorage\Services\SimpleStorageService;
@@ -39,7 +40,7 @@ class ArchivosController extends Controller
 
         // Register middleware
         $this->middleware('web');
-        $this->middleware(CanManagePublicaciones::class);
+        $this->middleware(CanManagePublicaciones::class, ['except' => ['show']]);
     }
 
     /**
@@ -147,10 +148,16 @@ class ArchivosController extends Controller
      * @param $id
      * @return \Illuminate\Http\Response
      * @throws \Lebenlabs\SimpleStorage\Exceptions\NotFoundException
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function show($id)
     {
         $storageItem = $this->storage->find($id);
+
+        if ($storageItem->getAtributos()->getExclusivo() && !Auth::check()) {
+            flash(trans('lebenlabs_simplecms.archivos.exclusivo'))->error();
+            return redirect()->route('auth.login');
+        }
 
         return response()->make(
             $storageItem->getArchivo(),

@@ -10,6 +10,6 @@
         <li><a href="{{ route('simplecms.publicaciones.create') }}">Crear Publicación</a></li>
         <li role="separator" class="divider"></li>
         <li><a href="{{ route('simplecms.categorias.index') }}">Categorias</a></li>
-        <li><a href="{{ route('simplecms.categorias.create') }}">Crear Publicación</a></li>
+        <li><a href="{{ route('simplecms.categorias.create') }}">Crear Categoría</a></li>
     </ul>
 </li>

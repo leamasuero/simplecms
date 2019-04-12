@@ -91,6 +91,15 @@ Route::group(['prefix' => 'simplecms', 'as' => 'simplecms.'], function () {
             'only' => ['create', 'store', 'destroy']
         ]
     );
+
+    Route::put(
+        'archivos/{id}/exclusivo',
+        [
+            'uses' => ArchivosController::class . '@exclusivo',
+            'as' => 'archivos.exclusivo'
+        ]
+    );
+
 });
 
 // El prefijo esta para evitar problemas en CBSF y permitir funcionar ambos SimpleCMS

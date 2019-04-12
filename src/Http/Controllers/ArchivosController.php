@@ -121,6 +121,30 @@ class ArchivosController extends Controller
 
     /**
      * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function exclusivo(Request $request, $id)
+    {
+        try {
+
+            $atributos = [
+                'exclusivo' => boolval($request->get('exclusivo', 0))
+            ];
+
+            $this->connection->beginTransaction();
+            $this->storage->setAtributos($id, $atributos);
+            $this->connection->commit();
+
+            flash(trans('lebenlabs_simplecms.archivos.exclusivo_success'))->success();
+        } catch (Exception $e) {
+            flash($e->getMessage())->error();
+        }
+
+        return redirect()->back();
+    }
+
+    /**
+     * @param $id
      * @return \Illuminate\Http\Response
      * @throws \Lebenlabs\SimpleStorage\Exceptions\NotFoundException
      */

@@ -80,6 +80,12 @@
                                 <a href="{{ route('simplecms.public.archivos.show', $archivo->getId()) }} ">{{ $archivo }}</a>
                                 <div class="clearfix"></div>
                             </form>
+
+                            {{--Resolver esto para bootstrap 3.4 - Toggle de exclusividad --}}
+                            {{--<div class="custom-control custom-switch">--}}
+                                {{--<input type="checkbox" class="custom-control-input" id="customSwitch1">--}}
+                                {{--<label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>--}}
+                            {{--</div>                            --}}
                         </div>
                         @endforeach
                     </div>

@@ -31,6 +31,12 @@ class SimpleCMSServiceProvider extends ServiceProvider
         // Publish views
         $this->publishes([__DIR__.'/Resources/Views' => resource_path('views/vendor/Lebenlabs/SimpleCMS')]);
 
+        // Load Translations
+        $this->loadTranslationsFrom(__DIR__.'/Resources/Lang', 'Lebenlabs/SimpleCMS');
+
+        // Publish Translations
+        $this->publishes([__DIR__.'/Resources/Lang' => resource_path('lang/vendor/Lebenlabs/SimpleCMS')]);
+
         // Load Routes
         $this->loadRoutesFrom(__DIR__.'/Routes/web.php');
 

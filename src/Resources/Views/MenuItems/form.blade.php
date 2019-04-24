@@ -78,7 +78,7 @@
         <div class="form-group {{ $errors->has('enlace') ? 'has-error':'' }}">
             <label class="col-xs-4 control-label">Enlace</label>
             <div class="input-group col-xs-6">
-                <input type="text" name="enlace" id="enlace" class="form-control" value="{{ old('enlace', $menuItem->getEnlaceExterno()) }}"/>
+                <input type="text" name="enlace" id="enlace" class="form-control" value="{{ old('enlace', $menuItem->getEnlaceExternoIfSet()) }}"/>
                 @if($errors->has('enlace'))
                     {!! $errors->first('enlace', '<small class="control-label">:message</small>') !!}
                 @endif

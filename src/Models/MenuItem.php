@@ -168,12 +168,8 @@ class MenuItem
         }
 
         if ($this->externo) {
+            return $this->getEnlaceExterno();
 
-            if ($accion->href) {
-                return url($accion->href);
-            } else {
-                return $emptyRoute;
-            }
         } else {
             if (isset($accion->name)) {
 
@@ -186,6 +182,20 @@ class MenuItem
                 return $emptyRoute;
             }
         }
+    }
+
+    /**
+     * Add Http if no Ftp, Http or Https in front
+     *
+     * @param $url
+     * @return string
+     */
+    private function addHttp($url) {
+        if (!preg_match("~^(?:f|ht)tps?://~i", $url)) {
+            $url = "http://" . $url;
+        }
+
+        return $url;
     }
 
     function getHijos()
@@ -331,16 +341,28 @@ class MenuItem
             return  $emptyRoute;
         }
 
-        if ($this->externo) {
+        if ($accion->href) {
+            return $accion->href;
+        } else {
+            return $emptyRoute;
+        }
+    }
 
-            if ($accion->href) {
-                return url($accion->href);
-            } else {
-                return $emptyRoute;
-            }
+    /**
+     * Obtiene el enlace cuando un menu item esta configurado
+     * como externo
+     *
+     * @return string
+     */
+    public function getEnlaceExternoIfSet()
+    {
+        $accion = json_decode($this->accion);
+
+        if ($accion && $accion->href) {
+            return $this->getEnlaceExterno();
         }
 
-        return $this->externo;
+        return '';
     }
 
 
@@ -352,10 +374,12 @@ class MenuItem
      */
     public  function  setEnlaceExterno($enlace)
     {
-        if ($this->externo) {
+        if ($this->externo && $enlace) {
             $this->accion = json_encode([
-                'href' =>   $enlace
+                'href' =>   $this->addHttp($enlace)
             ]);
+        } else {
+            $this->accion = null;
         }
 
         return $this;

@@ -72,7 +72,7 @@ class PublicacionesController extends Controller
         $publicaciones->appends('q', $q);
 
         if ($q) {
-            flash(trans('lebenlabs_simplecms.publicaciones.search_result', ['total' => $publicaciones->total()]))->success();
+            flash(trans('Lebenlabs/SimpleCMS::publicaciones.search_result', ['total' => $publicaciones->total()]))->success();
         }
 
         return view('Lebenlabs/SimpleCMS::Publicaciones.index', compact('publicaciones', 'q'));
@@ -114,7 +114,7 @@ class PublicacionesController extends Controller
             $this->simpleCMSProvider->guardarPublicacion($publicacion);
             $this->connection->commit();
 
-            flash(trans('lebenlabs_simplecms.publicaciones.store_success'))->success();
+            flash(trans('Lebenlabs/SimpleCMS::publicaciones.store_success'))->success();
             return redirect()->route('simplecms.publicaciones.index');
 
         } catch (Exception $ex) {
@@ -165,7 +165,7 @@ class PublicacionesController extends Controller
             $this->simpleCMSProvider->guardarPublicacion($publicacion);
             $this->connection->commit();
 
-            flash(trans('lebenlabs_simplecms.publicaciones.update_success'))->success();
+            flash(trans('Lebenlabs/SimpleCMS::publicaciones.update_success'))->success();
             return redirect()->route('simplecms.publicaciones.index');
 
         } catch (Exception $ex) {
@@ -195,7 +195,7 @@ class PublicacionesController extends Controller
             $this->simpleCMSProvider->eliminarPublicacion($publicacion);
             $this->connection->commit();
 
-            flash(trans('lebenlabs_simplecms.publicaciones.destroy_success'))->success();
+            flash(trans('Lebenlabs/SimpleCMS::publicaciones.destroy_success'))->success();
 
         } catch (Exception $ex) {
             $this->connection->rollback();

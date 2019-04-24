@@ -121,7 +121,7 @@ class MenuItemsController extends Controller
             $padreMenuItem = $this->simpleCMSProvider->findMenuItemById((int) $padreMenuItemId);
 
             if (!$padreMenuItem) {
-                throw new Exception(trans('lebenlabs_simplecms.menu_items.store_failed_padre_inexistente'));
+                throw new Exception(trans('Lebenlabs/SimpleCMS::menu_items.store_failed_padre_inexistente'));
             }
 
             $menuItem->setPadre($padreMenuItem)
@@ -143,7 +143,7 @@ class MenuItemsController extends Controller
 
             $this->connection->commit();
 
-            flash(trans('lebenlabs_simplecms.menu_items.store_success'))->success();
+            flash(trans('Lebenlabs/SimpleCMS::menu_items.store_success'))->success();
             return redirect()->route('simplecms.menus.menu_items.index', $menuId);
 
         } catch (Exception $ex) {
@@ -202,7 +202,7 @@ class MenuItemsController extends Controller
             $this->simpleCMSProvider->guardarMenuItem($menuItem);
             $this->connection->commit();
 
-            flash(trans('lebenlabs_simplecms.menu_items.update_success'))->success();
+            flash(trans('Lebenlabs/SimpleCMS::menu_items.update_success'))->success();
             return redirect()->route('simplecms.menus.menu_items.index', $menuId);
 
         } catch (Exception $ex) {
@@ -231,7 +231,7 @@ class MenuItemsController extends Controller
             $this->simpleCMSProvider->eliminarMenuItem($menuItem);
 
             $this->em->commit();
-            flash(trans('lebenlabs_simplecms.menu_items.destroy_success'))->success();
+            flash(trans('Lebenlabs/SimpleCMS::menu_items.destroy_success'))->success();
 
         } catch (Exception $ex) {
             $this->connection->beginTransaction();

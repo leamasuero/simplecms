@@ -54,7 +54,7 @@ class ArchivosController extends Controller
             ->find($request->get('entidad_id'));
 
         if (!$entidad) {
-            flash(trans('lebenlabs_simplecms.archivos.entidad_not_found'))->error();
+            flash(trans('Lebenlabs/SimpleCMS::archivos.entidad_not_found'))->error();
             return redirect()->route('simplecms.publicaciones.index');
         }
 
@@ -73,7 +73,7 @@ class ArchivosController extends Controller
         $entidad = $this->em->getRepository($request->get('entidad'))->find($request->get('entidad_id'));
 
         if (!$entidad) {
-            flash(trans('lebenlabs_simplecms.archivos.entidad_not_found'))->error();
+            flash(trans('Lebenlabs/SimpleCMS::archivos.entidad_not_found'))->error();
             return redirect()->route('simplecms.publicaciones.index');
         }
 
@@ -88,7 +88,7 @@ class ArchivosController extends Controller
 
             $this->connection->commit();
 
-            flash(trans('lebenlabs_simplecms.archivos.store_success'))->success();
+            flash(trans('Lebenlabs/SimpleCMS::archivos.store_success'))->success();
 
         } catch (Exception $ex) {
 
@@ -112,7 +112,7 @@ class ArchivosController extends Controller
             $this->storage->remove($id);
             $this->connection->commit();
 
-            flash(trans('lebenlabs_simplecms.archivos.destroy_success'))->success();
+            flash(trans('Lebenlabs/SimpleCMS::archivos.destroy_success'))->success();
         } catch (Exception $e) {
             flash($e->getMessage())->error();
         }
@@ -136,7 +136,7 @@ class ArchivosController extends Controller
             $this->storage->setAtributos($id, $atributos);
             $this->connection->commit();
 
-            flash(trans('lebenlabs_simplecms.archivos.exclusivo_success'))->success();
+            flash(trans('Lebenlabs/SimpleCMS::archivos.exclusivo_success'))->success();
         } catch (Exception $e) {
             flash($e->getMessage())->error();
         }
@@ -155,7 +155,7 @@ class ArchivosController extends Controller
         $storageItem = $this->storage->find($id);
 
         if ($storageItem->getAtributos()->getExclusivo() && !Auth::check()) {
-            flash(trans('lebenlabs_simplecms.archivos.exclusivo'))->error();
+            flash(trans('Lebenlabs/SimpleCMS::archivos.exclusivo'))->error();
             return redirect()->route('publico.login');
         }
 

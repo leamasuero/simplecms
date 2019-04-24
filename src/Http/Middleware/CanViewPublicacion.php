@@ -66,7 +66,7 @@ class CanViewPublicacion
 
 
         if (!$publicacion->isPublicada()) {
-            flash(trans('publicaciones.publicacion_no_publicada'))->info();
+            flash(trans('Lebenlabs/SimpleCMS::publicaciones.publicacion_no_publicada'))->info();
         }
 
         return $next($request);

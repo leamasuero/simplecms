@@ -55,7 +55,7 @@ class CategoriasController extends Controller
         $categorias->appends('q', $q);
 
         if ($q) {
-            flash(trans('lebenlabs_simplecms.categorias.search_result', ['total' => $categorias->total()]))->success();
+            flash(trans('Lebenlabs/SimpleCMS::categorias.search_result', ['total' => $categorias->total()]))->success();
         }
 
         return view('Lebenlabs/SimpleCMS::Categorias.index', compact('categorias', 'q'));
@@ -82,7 +82,7 @@ class CategoriasController extends Controller
             $reponse = [
                 'event' => class_basename(Categoria::class) . '/' . __FUNCTION__,
                 'clase' => 'alert alert-successful',
-                'msg' => trans('lebenlabs_simplecms.categorias.store_success'),
+                'msg' => trans('Lebenlabs/SimpleCMS::categorias.store_success'),
                 'categoria' => $categoria->toArray(),
             ];
 
@@ -113,7 +113,7 @@ class CategoriasController extends Controller
     {
         $categoria = $this->simpleCMSProvider->findCategoria($id);
         if (!$categoria) {
-            flash(trans('lebenlabs_simplecms.categorias.not_found'))->error();
+            flash(trans('Lebenlabs/SimpleCMS::categorias.not_found'))->error();
             redirect()->back();
         }
 
@@ -130,7 +130,7 @@ class CategoriasController extends Controller
     {
         $categoria = $this->simpleCMSProvider->findCategoria($id);
         if (!$categoria) {
-            flash(trans('lebenlabs_simplecms.categorias.not_found'))->error();
+            flash(trans('Lebenlabs/SimpleCMS::categorias.not_found'))->error();
             return redirect()->back();
         }
 
@@ -144,7 +144,7 @@ class CategoriasController extends Controller
             $this->simpleCMSProvider->guardarCategoria($categoria);
             $this->connection->commit();
 
-            flash(trans('lebenlabs_simplecms.categorias.update_success'))->success();
+            flash(trans('Lebenlabs/SimpleCMS::categorias.update_success'))->success();
             return redirect()->route('simplecms.categorias.index');
 
         } catch (Exception $ex) {
@@ -166,12 +166,12 @@ class CategoriasController extends Controller
     {
         $categoria = $this->simpleCMSProvider->findCategoria($id);
         if (!$categoria) {
-            flash(trans('lebenlabs_simplecms.categorias.not_found'))->error();
+            flash(trans('Lebenlabs/SimpleCMS::categorias.not_found'))->error();
             return redirect()->back();
         }
 
         if ($categoria->isProtegida()) {
-            flash(trans('lebenlabs_simplecms.categorias.not_allowed'))->error();
+            flash(trans('Lebenlabs/SimpleCMS::categorias.not_allowed'))->error();
             return redirect()->back();
         }
 
@@ -181,7 +181,7 @@ class CategoriasController extends Controller
             $this->simpleCMSProvider->eliminarCategoria($categoria);
             $this->connection->commit();
 
-            flash(trans('lebenlabs_simplecms.categorias.destroy_success'))->success();
+            flash(trans('Lebenlabs/SimpleCMS::categorias.destroy_success'))->success();
 
         } catch (Exception $ex) {
             $this->connection->rollback();
@@ -220,7 +220,7 @@ class CategoriasController extends Controller
             $this->simpleCMSProvider->guardarCategoria($categoria);
             $this->connection->commit();
 
-            flash(trans('lebenlabs_simplecms.categorias.store_success'))->success();
+            flash(trans('Lebenlabs/SimpleCMS::categorias.store_success'))->success();
             return redirect()->route('simplecms.categorias.index');
 
         } catch (Exception $ex) {

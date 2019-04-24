@@ -38,9 +38,9 @@ class PublicacionExiste
         // La publicaciond ebe existir
         if (!$publicacion) {
             if ($request->ajax() || $request->wantsJson()) {
-                return response(trans('lebenlabs_simplecms.publicaciones.not_found'), 404);
+                return response(trans('Lebenlabs/SimpleCMS::publicaciones.not_found'), 404);
             } else {
-                abort(404, trans('lebenlabs_simplecms.publicaciones.not_found'));
+                abort(404, trans('Lebenlabs/SimpleCMS::publicaciones.not_found'));
             }
         }
 

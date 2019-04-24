@@ -69,7 +69,7 @@ class ImagenesController extends Controller
             $this->simpleCMSProvider->guardarPublicacion($publicacion);
             $this->connection->commit();
 
-            flash(trans('lebenlabs_simplecms.imagenes.store_success'))->success();
+            flash(trans('Lebenlabs/SimpleCMS::imagenes.store_success'))->success();
 
         } catch (Exception $ex) {
 
@@ -91,7 +91,7 @@ class ImagenesController extends Controller
             $imagen = $this->simpleCMSProvider->findImagen($id);
 
             if (!$imagen) {
-                flash(trans('lebenlabs_simplecms.imagenes.not_found'))->error();
+                flash(trans('Lebenlabs/SimpleCMS::imagenes.not_found'))->error();
                 return back();
             }
 
@@ -99,7 +99,7 @@ class ImagenesController extends Controller
             $this->simpleCMSProvider->eliminarImagen($imagen);
             $this->connection->commit();
 
-            flash(trans('lebenlabs_simplecms.imagenes.destroy_success'))->success();
+            flash(trans('Lebenlabs/SimpleCMS::imagenes.destroy_success'))->success();
 
         } catch (Exception $ex) {
 

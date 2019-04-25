@@ -35,10 +35,6 @@
       ],
   ```   
 * Ejecutar migrations
-* Correr seeds package (opcional)  
-  ``` bash
-      php artisan db:seed --class='Lebenlabs\SimpleCMS\Database\Seeds\PackageDatabaseSeeder'
-  ``` 
 
 * En el authenticable
   ``` php
@@ -133,13 +129,26 @@
   ```
 * Generar JS/CSS del package. Agregar las lineas a webpack.mix.js
   ``` js
+   mix.
+     -----
       // Lebenlabs - SimpleCMS - JS
     .js('vendor/lebenlabs/simplecms/src/Resources/Assets/js/SimpleCMS', 'public/js')
     .js('vendor/lebenlabs/simplecms/src/Resources/Assets/js/SummernoteHelper', 'public/js')
     .js('vendor/lebenlabs/simplecms/src/Resources/Assets/js/bootstrap-datetimepicker.min', 'public/js')
+    
+    ----
     // Lebenlabs - SimpleCMS - CSS
     .sass('vendor/lebenlabs/simplecms/src/Resources/Assets/css/bootstrap-datetimepicker.min', 'public/css')
   ```
+* Compilar assets
+  ```bash 
+    npm run dev
+  ```
+* Crear menu ejecutando el siguiente comando:
+  ```bash 
+    php artisan lebenlabs:simplecms:create-menu 
+  ```
+  NOTA: Hoy en día solo se soporta un solo Menú - IMPROVE THIS
 * Cargar los menu items que se pretendan utilizar utilizando un view composer registrado desde la aplicación (IMPROVE: seleccionar determinado menu - posibilidad de varios)
   ``` php
     // ComposerServiceProvider

@@ -5,6 +5,8 @@ namespace Lebenlabs\SimpleCMS;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Support\ServiceProvider;
 use Intervention\Image\ImageManager;
+use Lebenlabs\SimpleCMS\Console\Commands\CleanDatabaseCommand;
+use Lebenlabs\SimpleCMS\Console\Commands\CreateMenuCommand;
 use Lebenlabs\SimpleCMS\Contracts\CanEditMenuItem;
 use Lebenlabs\SimpleCMS\Contracts\CanManagePublicaciones;
 use Lebenlabs\SimpleCMS\Http\Middleware\CanEditMenu;
@@ -110,5 +112,9 @@ class SimpleCMSServiceProvider extends ServiceProvider
         // Publish Migrations
         $this->publishes([__DIR__.'/Database/Migrations' => database_path('migrations')]);
 
+        $this->commands([
+            CleanDatabaseCommand::class,
+            CreateMenuCommand::class
+        ]);
     }
 }

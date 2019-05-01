@@ -217,6 +217,16 @@ class SimpleCMS
         return $this->publicacionesService->findAllPublicacionesDestacadas($perPage);
     }
 
+
+    /**
+     * @param int $count
+     * @return array
+     */
+    public function getPublicacionesDestacadas($count = 5)
+    {
+        return $this->publicacionesService->getPublicacionesDestacadas($count);
+    }
+
     /**
      * @param int $id
      * @return Publicacion

@@ -97,4 +97,14 @@ class PublicacionesService
     {
         return $this->publicacionRepository->buscarPublicacionesByCategoriaSlug($slug, $perPage);
     }
+
+
+    /**
+     * @param int $count
+     * @return array
+     */
+    public function getPublicacionesDestacadas($count = 5)
+    {
+        $this->publicacionRepository->findBy(['destacada' => 1, 'publicada' => 1], ['id' => 'desc'], $count, 0);
+    }
 }

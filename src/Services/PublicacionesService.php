@@ -105,6 +105,6 @@ class PublicacionesService
      */
     public function getPublicacionesDestacadas($count = 5)
     {
-        $this->publicacionRepository->findBy(['destacada' => 1, 'publicada' => 1], ['id' => 'desc'], $count, 0);
+        return $this->publicacionRepository->findBy(['destacada' => 1, 'publicada' => 1], ['id' => 'desc'], $count, 0);
     }
 }

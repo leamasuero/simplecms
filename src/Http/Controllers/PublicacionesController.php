@@ -122,7 +122,7 @@ class PublicacionesController extends Controller
             $this->connection->rollback();
             flash($ex->getMessage())->error();
 
-            return redirect()->route('simplecms.publicaciones.create', compact('publicacion', 'categoria'))
+            return redirect()->back()
                 ->withInput();
         }
     }
@@ -175,7 +175,7 @@ class PublicacionesController extends Controller
 
             $categorias = $this->simpleCMSProvider->listarCategoriasPublicacion();
 
-            return redirect()->route('simplecms.publicaciones.edit', compact('publicacion', 'categoria', 'categorias'))
+            return redirect()->back()
                 ->withInput();
         }
     }

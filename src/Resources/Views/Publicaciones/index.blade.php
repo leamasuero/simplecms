@@ -25,6 +25,7 @@ Publicaciones
                     <tr>
                         <th>#</th>
                         <th>Nombre</th>
+                        <th>Categoría</th>
                         <th class="text-center">Publicada</th>
                         <th class="text-center">Destacada</th>
                         <th class="text-center w200px">Acciones</th>
@@ -40,6 +41,9 @@ Publicaciones
                             <a target="_blank" href="{{ route('simplecms.public.publicaciones.show', ['slug' => $publicacion->getSlug()]) }}">
                                 {{ $publicacion }}
                             </a>
+                        </td>
+                        <td class="text-center">
+                            {{ $publicacion->getCategoria() }}
                         </td>
                         <td class="text-center">
                             @if($publicacion->isPublicada())

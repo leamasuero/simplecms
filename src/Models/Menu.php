@@ -33,8 +33,9 @@ class Menu
      */
     private $menuItems;
 
-    public function __construct()
+    public function __construct($nombre = '')
     {
+        $this->nombre = $nombre;
         $this->menuItems = new ArrayCollection();
     }
 

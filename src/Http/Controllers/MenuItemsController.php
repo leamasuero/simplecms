@@ -151,7 +151,8 @@ class MenuItemsController extends Controller
             $this->connection->rollback();
 
             flash($ex->getMessage())->error();
-            return redirect()->route('simplecms.menus.menu_items.create', [$menuId])
+
+            return redirect()->back()
                 ->withInput();
         }
     }
@@ -209,7 +210,8 @@ class MenuItemsController extends Controller
             $this->connection->rollback();
 
             flash($ex->getMessage())->error();
-            return redirect()->route('simplecms.menus.menu_items.edit', [$menuId, $menuItemId])
+
+            return redirect()->back()
                 ->withInput();
         }
     }

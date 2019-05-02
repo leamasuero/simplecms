@@ -152,7 +152,7 @@ class CategoriasController extends Controller
             $this->connection->rollback();
             flash($ex->getMessage())->error();
 
-            return redirect()->route('simplecms.categorias.edit', compact('categoria'))
+            return redirect()->back()
                 ->withInput();
         }
     }
@@ -228,7 +228,7 @@ class CategoriasController extends Controller
             $this->connection->rollback();
             flash($ex->getMessage())->error();
 
-            return redirect()->route('simplecms.categorias.create', compact('categoria'))
+            return redirect()->back()
                 ->withInput();
         }
 

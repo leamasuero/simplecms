@@ -53,4 +53,30 @@ class CategoriaRepository extends EntityRepository
 
         return $this->paginate($qb->getQuery(), $perPage);
     }
+
+    /**
+     * Retorna un arreglo con las categorías junto con la cantidad de
+     * publicaciones asociadas a esta
+     *
+     * @return mixed
+     */
+    public function findCategoriaPublicacionesCount()
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('C.id', 'C.nombre', 'C.slug')
+            ->from(Categoria::class, 'C')
+            ->leftJoin(
+                Publicacion::class,
+                'P',
+                Join::WITH,
+                'C.id = P.categoria'
+            )
+            ->addSelect('COUNT(P.id) AS cantidad_publicaciones')
+            ->where('C.publicada = true')
+            ->where('P.publicada = true')
+            ->groupBy('C.id')
+            ->orderBy('C.nombre', 'asc');
+
+        return $qb->getQuery()->getResult();
+    }
 }

@@ -377,6 +377,16 @@ class SimpleCMS
         return $this->categoriasService->findCategoriaBySlug($slug);
     }
 
+    /**
+     * Retorna el listado de categorías con la cantidad de Publicaciones
+     * visibles asociadas a cada una de estas
+     *
+     * @return mixed
+     */
+    public function findCategoriaPublicacionesCount()
+    {
+        return $this->categoriasService->findCategoriaPublicacionesCount();
+    }
 
     /*********************************************************
      * Imagenes Methods

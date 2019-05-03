@@ -53,6 +53,12 @@ class Categoria
     private $slug;
 
     /**
+     * One Category has many Publicaciones. This is the inverse side.
+     * @ORM\OneToMany(targetEntity="Publicacion", mappedBy="categoria")
+     */
+    private $publicaciones;
+
+    /**
      * @ORM\Column(type="datetime")
      * @var DateTime
      * */

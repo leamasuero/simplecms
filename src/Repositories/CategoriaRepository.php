@@ -6,6 +6,8 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Lebenlabs\SimpleCMS\Models\Categoria;
+use Lebenlabs\SimpleCMS\Models\Publicacion;
+use Doctrine\ORM\Query\Expr\Join;
 
 class CategoriaRepository extends EntityRepository
 {

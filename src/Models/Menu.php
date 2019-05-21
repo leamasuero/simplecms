@@ -30,6 +30,7 @@ class Menu
      * Un menu puede tener muchos menu items
      *
      * @OneToMany(targetEntity="MenuItem", mappedBy="menu", fetch="EAGER")
+     * @ORM\OrderBy({"orden" = "ASC"})
      */
     private $menuItems;
 

@@ -4,7 +4,6 @@ namespace Lebenlabs\SimpleCMS\Models;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping\OneToMany;
 
 /**
  * @ORM\Entity(repositoryClass="Lebenlabs\SimpleCMS\Repositories\MenuItemRepository")
@@ -60,7 +59,8 @@ class MenuItem
     /**
      * Un menu item puede tener muchos hijos
      *
-     * @OneToMany(targetEntity="MenuItem", mappedBy="padre", fetch="EAGER", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="MenuItem", mappedBy="padre", fetch="EAGER", cascade={"remove"})
+     * @ORM\OrderBy({"orden" = "ASC"})
      */
     private $hijos;
 

@@ -105,6 +105,7 @@ class PublicacionesController extends Controller
             ->setCuerpo($request->get('cuerpo'))
             ->setFechaPublicacion($request->get('fecha_publicacion'))
             ->setDestacada(boolval($request->get('destacada', false)))
+            ->setPrivada(boolval($request->get('privada', false)))
             ->setPublicada(boolval($request->get('publicada', false)))
             ->setCategoria($categoria);
 
@@ -155,6 +156,7 @@ class PublicacionesController extends Controller
             ->setCuerpo($request->get('cuerpo'))
             ->setFechaPublicacion($request->get('fecha_publicacion'))
             ->setDestacada(boolval($request->get('destacada', false)))
+            ->setPrivada(boolval($request->get('privada', false)))
             ->setPublicada(boolval($request->get('publicada', false)));
 
         $publicacion->setCategoria($categoria);

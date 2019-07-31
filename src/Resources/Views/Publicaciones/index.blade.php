@@ -28,6 +28,7 @@ Publicaciones
                         <th>Categoría</th>
                         <th class="text-center">Publicada</th>
                         <th class="text-center">Destacada</th>
+                        <th class="text-center">Privada</th>
                         <th class="text-center w200px">Acciones</th>
                     </tr>
                 </thead>
@@ -54,6 +55,9 @@ Publicaciones
                         </td>
                         <td class="text-center">
                             <i class="fa{{ $publicacion->isDestacada() ? '':'r' }} fa-star" title="Destacada"></i>
+                        </td>
+                        <td class="text-center">
+                            <i class="fa {{ $publicacion->isPrivada() ? 'fa-eye-slash':'fa-eye' }}" title="Privada"></i>
                         </td>
                         <td class="text-center">
                             <a class="btn btn-sm btn-default" href="{{route('simplecms.imagenes.create', $publicacion->getId())}}" title="Administrar imagen de la publicación">

@@ -21,15 +21,26 @@ class PublicacionRepository extends EntityRepository
     {
         return $this->buscar($q, $perPage, true);
     }
-
+    
     /**
-     *
-     * @param string $q
+     * @param $q
+     * @param bool $privada
      * @param int $perPage
-     * @param boolean $publicada
      * @return LengthAwarePaginator
      */
-    public function buscar($q, $perPage = 10, $publicada = null)
+    public function buscarByPrivada($q, $privada, $perPage = 10)
+    {
+        return $this->buscar($q, $perPage, null, $privada);
+    }
+
+    /**
+     * @param $q
+     * @param int $perPage
+     * @param null $publicada
+     * @param null $privada
+     * @return LengthAwarePaginator
+     */
+    public function buscar($q, $perPage = 10, $publicada = null, $privada = null)
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('Publicacion')
@@ -40,6 +51,11 @@ class PublicacionRepository extends EntityRepository
         if ($publicada) {
             $qb->andWhere('Publicacion.publicada = :publicada')
                 ->setParameter('publicada', $publicada);
+        }
+
+        if ($privada) {
+            $qb->andWhere('Publicacion.privada = :privada')
+                ->setParameter('privada', $privada);
         }
 
         if ($q) {

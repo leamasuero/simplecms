@@ -67,6 +67,7 @@ Route::group(['prefix' => 'simplecms', 'as' => 'simplecms.'], function () {
         ]
     );
 
+
     // Categorias
     Route::resource(
         'categorias',

@@ -35,6 +35,11 @@ class PublicacionesService
         return $this->publicacionRepository->buscar($q, $perPage);
     }
 
+    public function buscarPublicacionesByPrivada($q, $privada, $perPage = 20)
+    {
+        return $this->publicacionRepository->buscarByPrivada($q, $privada, $perPage);
+    }
+
     public function findAllPublicaciones()
     {
         return $this->publicacionRepository->findAll();

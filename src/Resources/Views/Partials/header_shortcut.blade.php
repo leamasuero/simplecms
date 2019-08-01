@@ -16,6 +16,11 @@
             </a>
         </li>
         <li>
+            <a href="{{ route('simplecms.publicaciones.index', ['privada' => true]) }}">
+                {{ __('Lebenlabs/SimpleCMS::partials.shortcut_publicaciones_privadas_index') }}
+            </a>
+        </li>
+        <li>
             <a href="{{ route('simplecms.publicaciones.create') }}">
                 {{ __('Lebenlabs/SimpleCMS::partials.shortcut_publicaciones_create') }}
             </a>

@@ -7,5 +7,5 @@ return [
     'shortcut_publicaciones_create' => 'Crear Publicación',
     'shortcut_categorias_index' => 'Categorías',
     'shortcut_categorias_create' => 'Crear Categoría',
-
+    'shortcut_publicaciones_privadas_index' => 'Publicaciones privadas',
 ];

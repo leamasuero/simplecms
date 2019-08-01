@@ -66,10 +66,17 @@ class PublicacionesController extends Controller
     public function index(Request $request)
     {
         $q = $request->get('q', null);
+        $privada = $request->get('privada', null);
 
-        $publicaciones = $this->simpleCMSProvider->buscarPublicaciones($q);
+        if ($privada != null) {
+            $publicaciones = $this->simpleCMSProvider->buscarPublicacionesByPrivada($q, $privada, 20);
+        } else {
+            $publicaciones = $this->simpleCMSProvider->buscarPublicaciones($q, 20);
+        }
 
-        $publicaciones->appends('q', $q);
+        $publicaciones
+            ->appends('q', $q)
+            ->appends('privada', $privada);
 
         if ($q) {
             flash(trans('Lebenlabs/SimpleCMS::publicaciones.search_result', ['total' => $publicaciones->total()]))->success();
@@ -248,4 +255,5 @@ class PublicacionesController extends Controller
 
         return view('Lebenlabs/SimpleCMS::Publicaciones.public-index-by-categoria-slug', compact('publicaciones', 'categorias', 'categoria'));
     }
+
 }

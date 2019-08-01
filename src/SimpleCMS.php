@@ -198,6 +198,17 @@ class SimpleCMS
     }
 
     /**
+     * @param null $q
+     * @param bool|null $privada
+     * @param int $perPage
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function buscarPublicacionesByPrivada($q = null, $privada, $perPage = 20)
+    {
+        return $this->publicacionesService->buscarPublicacionesByPrivada($q, $privada, $perPage);
+    }
+
+    /**
      * @return array
      */
     public function findAllPublicaciones()

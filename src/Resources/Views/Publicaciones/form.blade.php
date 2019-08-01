@@ -51,6 +51,14 @@
         </div>
     </div>
 
+    <div class="form-group row">
+        <label class="col-md-2 col-form-label text-md-right" for="privada"></label>
+        <div class="col-md-10">
+            {{ Form::checkbox('privada', 'false', old('privada', $publicacion->isPrivada()), ['id' => 'privada']) }}
+            &nbsp;&nbsp;<label for="privada">Privada</label>
+        </div>
+    </div>
+
     <div class="form-group">
         <label class="col-md-2 control-label" for="publicada"></label>
         <div class="input-group col-md-9">

@@ -1,7 +1,7 @@
 @extends(config('simplecms.backend.layout'))
 
 @section('title')
-Publicaciones
+Publicaciones privadas
 @stop
 
 @php ($busquedaWidget = true)

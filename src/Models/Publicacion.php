@@ -68,6 +68,13 @@ class Publicacion implements Shareable, Storable
     private $destacada;
 
     /**
+     * @ORM\Column(type="boolean")
+     * @var boolean
+     */
+    private $privada;
+
+
+    /**
      * @ORM\ManyToOne(targetEntity="Categoria")
      * @ORM\JoinColumn(name="categoria_id", referencedColumnName="id", nullable=false)
      * @var Categoria
@@ -107,6 +114,7 @@ class Publicacion implements Shareable, Storable
         $this->publicada = false;
         $this->destacada = false;
         $this->protegida = false;
+        $this->privada = false;
         $this->created_at = new \DateTime;
         $this->updated_at = new \DateTime;
     }
@@ -203,6 +211,28 @@ class Publicacion implements Shareable, Storable
     {
         return $this->updated_at;
     }
+
+    /**
+     * Chequea si la publicacion es privada
+     *
+     * @return bool
+     */
+    public function isPrivada(): bool
+    {
+        return $this->privada;
+    }
+
+    /**
+     * Set de la publicacion es privada
+     *
+     * @param bool $privada
+     */
+    public function setPrivada(bool $privada): Publicacion
+    {
+        $this->privada = $privada;
+        return $this;
+    }
+
 
     public function setId($id)
     {

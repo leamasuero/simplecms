@@ -19,17 +19,28 @@ class PublicacionRepository extends EntityRepository
      */
     public function buscarPublicadas($q, $perPage = 10)
     {
-        return $this->buscar($q, $perPage, true);
+        return $this->buscar($q, $perPage, true, false);
+    }
+    
+    /**
+     * @param $q
+     * @param bool $privada
+     * @param int $perPage
+     * @return LengthAwarePaginator
+     */
+    public function buscarByPrivada($q, $privada, $perPage = 10)
+    {
+        return $this->buscar($q, $perPage, null, $privada);
     }
 
     /**
-     *
-     * @param string $q
+     * @param $q
      * @param int $perPage
-     * @param boolean $publicada
+     * @param null $publicada
+     * @param null $privada
      * @return LengthAwarePaginator
      */
-    public function buscar($q, $perPage = 10, $publicada = null)
+    public function buscar($q, $perPage = 10, $publicada = null, $privada = null)
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('Publicacion')
@@ -37,16 +48,21 @@ class PublicacionRepository extends EntityRepository
             ->leftJoin('Publicacion.categoria', 'Categoria')
             ->orderBy('Publicacion.id', 'desc');
 
-        if ($publicada) {
-            $qb->andWhere('Publicacion.publicada = :publicada')
-                ->setParameter('publicada', $publicada);
-        }
-
         if ($q) {
             $qb->andWhere('Publicacion.titulo LIKE :q')
                 ->orWhere('Publicacion.cuerpo LIKE :q')
                 ->orWhere('Categoria.nombre LIKE :q')
                 ->setParameter('q', "%{$q}%");
+        }
+
+        if ($publicada) {
+            $qb->andWhere('Publicacion.publicada = :publicada')
+                ->setParameter('publicada', $publicada);
+        }
+
+        if ($privada !== null) {
+            $qb->andWhere('Publicacion.privada = :privada')
+                ->setParameter('privada', $privada);
         }
 
         return $this->paginate($qb->getQuery(), $perPage);
@@ -85,6 +101,7 @@ class PublicacionRepository extends EntityRepository
             ->from(Publicacion::class, 'Publicacion')
             ->where('Publicacion.destacada = true')
             ->andWhere('Publicacion.publicada = true')
+            ->andWhere('Publicacion.privada = false')
             ->orderBy('Publicacion.id', 'desc');
 
         return $this->paginate($qb->getQuery(), $perPage);

@@ -19,7 +19,7 @@ class PublicacionRepository extends EntityRepository
      */
     public function buscarPublicadas($q, $perPage = 10)
     {
-        return $this->buscar($q, $perPage, true);
+        return $this->buscar($q, $perPage, true, false);
     }
     
     /**
@@ -48,21 +48,21 @@ class PublicacionRepository extends EntityRepository
             ->leftJoin('Publicacion.categoria', 'Categoria')
             ->orderBy('Publicacion.id', 'desc');
 
-        if ($publicada) {
-            $qb->andWhere('Publicacion.publicada = :publicada')
-                ->setParameter('publicada', $publicada);
-        }
-
-        if ($privada) {
-            $qb->andWhere('Publicacion.privada = :privada')
-                ->setParameter('privada', $privada);
-        }
-
         if ($q) {
             $qb->andWhere('Publicacion.titulo LIKE :q')
                 ->orWhere('Publicacion.cuerpo LIKE :q')
                 ->orWhere('Categoria.nombre LIKE :q')
                 ->setParameter('q', "%{$q}%");
+        }
+
+        if ($publicada) {
+            $qb->andWhere('Publicacion.publicada = :publicada')
+                ->setParameter('publicada', $publicada);
+        }
+
+        if ($privada !== null) {
+            $qb->andWhere('Publicacion.privada = :privada')
+                ->setParameter('privada', $privada);
         }
 
         return $this->paginate($qb->getQuery(), $perPage);
@@ -101,6 +101,7 @@ class PublicacionRepository extends EntityRepository
             ->from(Publicacion::class, 'Publicacion')
             ->where('Publicacion.destacada = true')
             ->andWhere('Publicacion.publicada = true')
+            ->andWhere('Publicacion.privada = false')
             ->orderBy('Publicacion.id', 'desc');
 
         return $this->paginate($qb->getQuery(), $perPage);

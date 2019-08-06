@@ -14,7 +14,7 @@ class Version20190730222243 extends AbstractMigration
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE lebenlabs_simplecms_publicaciones ADD privada BIT NOT NULL DEFAULT 0');
+        $this->addSql('ALTER TABLE lebenlabs_simplecms_publicaciones ADD privada TINYINT(1) NOT NULL DEFAULT 0');
     }
 
     /**

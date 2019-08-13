@@ -82,11 +82,16 @@
         </div>
     </div>
 
+    <input type="hidden" value="0" name="save_as_draft" id="save_as_draft" />
+
     <div class="form-group">
         <label class="col-md-2 control-label"></label>
         <div class="col-md-9 col-md-offset-4">
             <button type="submit" class="btn btn-primary">
                 Aceptar
+            </button>
+            <button type="submit" class="btn btn-link" id="publicacion-save-draft">
+                Guardar Borrador
             </button>
             <a href="{{ route('simplecms.publicaciones.index') }}" class="btn btn-default">Cancelar</a>
         </div>
@@ -102,6 +107,17 @@
 
             $('.datetimepicker').datetimepicker({
                 format: '{{ config("simplecms.formats.moment-just-date") }}'
+            });
+            
+            $('button#publicacion-save-draft').on('click', function (e) {
+
+                e.preventDefault();
+
+                var form = $(this).parents('form:first');
+
+                $('#save_as_draft').val(1);
+
+                form.submit();
             });
         });
     </script>

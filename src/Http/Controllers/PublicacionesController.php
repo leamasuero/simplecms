@@ -104,6 +104,9 @@ class PublicacionesController extends Controller
      */
     public function store(StorePublicacionRequest $request)
     {
+        // Si se esta almacenando como borrador este parametro viene en 1
+        $saveAsDraft = boolval($request->get('save_as_draft', 0));
+
         $publicacion = new Publicacion();
         $categoria = $this->simpleCMSProvider->findCategoria($request->get('categoria'));
 
@@ -116,11 +119,22 @@ class PublicacionesController extends Controller
             ->setPublicada(boolval($request->get('publicada', false)))
             ->setCategoria($categoria);
 
+        // En caso de que sea borrador quitamos la marca de publicada
+        if ($saveAsDraft) {
+            $publicacion->setPublicada(false);
+        }
+
         try {
 
             $this->connection->beginTransaction();
             $this->simpleCMSProvider->guardarPublicacion($publicacion);
             $this->connection->commit();
+
+            if ($saveAsDraft) {
+                flash(trans('Lebenlabs/SimpleCMS::publicaciones.draft_update_success'))->success();
+                //Buscar ruta desde config
+                //return redirect()->route('simplecms.publicaciones.index');
+            }
 
             flash(trans('Lebenlabs/SimpleCMS::publicaciones.store_success'))->success();
             return redirect()->route('simplecms.publicaciones.index');
@@ -155,6 +169,9 @@ class PublicacionesController extends Controller
      */
     public function update($id, UpdatePublicacionRequest $request)
     {
+        // Si se esta almacenando como borrador este parametro viene en 1
+        $saveAsDraft = boolval($request->get('save_as_draft', 0));
+
         $publicacion = $this->simpleCMSProvider->findPublicacion($id);
         $categoria = $this->simpleCMSProvider->findCategoria($request->get('categoria'));
 
@@ -166,6 +183,11 @@ class PublicacionesController extends Controller
             ->setPrivada(boolval($request->get('privada', false)))
             ->setPublicada(boolval($request->get('publicada', false)));
 
+        // En caso de que sea borrador quitamos la marca de publicada
+        if ($saveAsDraft) {
+            $publicacion->setPublicada(false);
+        }
+
         $publicacion->setCategoria($categoria);
 
         try {
@@ -173,6 +195,13 @@ class PublicacionesController extends Controller
             $this->connection->beginTransaction();
             $this->simpleCMSProvider->guardarPublicacion($publicacion);
             $this->connection->commit();
+
+
+            if ($saveAsDraft) {
+                flash(trans('Lebenlabs/SimpleCMS::publicaciones.draft_update_success'))->success();
+                //Buscar ruta desde config
+                //return redirect()->route('simplecms.publicaciones.index');
+            }
 
             flash(trans('Lebenlabs/SimpleCMS::publicaciones.update_success'))->success();
             return redirect()->route('simplecms.publicaciones.index');

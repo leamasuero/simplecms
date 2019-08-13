@@ -60,15 +60,15 @@ Publicaciones privadas
                             <i class="fa {{ $publicacion->isPrivada() ? 'fa-eye-slash':'fa-eye' }}" title="Privada"></i>
                         </td>
                         <td class="text-center">
-                            <a class="btn btn-sm btn-default" href="{{route('simplecms.imagenes.create', $publicacion->getId())}}" title="Administrar imagen de la publicación">
+                            <a class="btn btn-sm btn-secondary" href="{{route('simplecms.imagenes.create', $publicacion->getId())}}" title="Administrar imagen de la publicación">
                                 <i class="fa fa-image"></i>
                             </a>
 
                             {{--TODO: esto hay que sacarlo--}}
-                            <a class="btn btn-sm btn-default" href="{{ route('simplecms.archivos.create', ['entidad' => get_class($publicacion),'entidad_id' => $publicacion->getId()]) }}" title="Archivos de la publicación">
+                            <a class="btn btn-sm btn-secondary" href="{{ route('simplecms.archivos.create', ['entidad' => get_class($publicacion),'entidad_id' => $publicacion->getId()]) }}" title="Archivos de la publicación">
                                 <i class="fa fa-file-pdf"></i>
                             </a>
-                            <a class="btn btn-sm btn-default" href="{{ route('simplecms.publicaciones.edit', $publicacion->getId()) }}" title="Editar publicación">
+                            <a class="btn btn-sm btn-secondary" href="{{ route('simplecms.publicaciones.edit', $publicacion->getId()) }}" title="Editar publicación">
                                 <i class="fa fa-pencil-alt"></i>
                             </a>
 
@@ -81,7 +81,7 @@ Publicaciones privadas
                                 </button>
                             </form>
                             @else
-                            <a class="btn btn-sm btn-default disabled" href="javascript::void(0)" title="Esta publicación se encuentra protegida y no puede ser borrada">
+                            <a class="btn  btn-sm btn-secondary disabled" href="javascript::void(0)" title="Esta publicación se encuentra protegida y no puede ser borrada">
                                 <i class="fa fa-trash" title="Esta publicación se encuentra protegida y no puede ser borrada"></i>
                             </a>
                             @endif

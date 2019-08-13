@@ -80,7 +80,7 @@ Menu Items - {{ $menu }}
                             {{--</td>--}}
 
                             <td class="text-center">
-                                <a class="btn btn-default" href="{{ route('simplecms.menus.menu_items.edit', [$menu->getId(), $menuItem->getId()]) }}" title="Editar Menú Item">
+                                <a class="btn btn-sm btn-secondary" href="{{ route('simplecms.menus.menu_items.edit', [$menu->getId(), $menuItem->getId()]) }}" title="Editar Menú Item">
                                     <i class="fa fa-pencil-alt"></i>
                                 </a>
 
@@ -136,7 +136,7 @@ Menu Items - {{ $menu }}
                                     {{--</td>--}}
 
                                     <td class="text-center">
-                                        <a class="btn btn-default" href="{{ route('simplecms.menus.menu_items.edit', [$menu->getId(), $menuItemHijo->getId()]) }}" title="Editar Menú Item">
+                                        <a class="btn btn-sm btn-secondary" href="{{ route('simplecms.menus.menu_items.edit', [$menu->getId(), $menuItemHijo->getId()]) }}" title="Editar Menú Item">
                                             <i class="fa fa-pencil-alt"></i>
                                         </a>
 

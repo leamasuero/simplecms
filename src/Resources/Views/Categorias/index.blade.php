@@ -48,7 +48,7 @@ Categorías
                             <i class="fa{{ $categoria->isDestacada() ? '':'r' }} fa-star" title="Destacada"></i>
                         </td>
                         <td class="text-center">
-                            <a class="btn btn-default" href="{{ route('simplecms.categorias.edit', $categoria->getId()) }}" title="Editar categoría">
+                            <a class="btn btn-sm btn-secondary" href="{{ route('simplecms.categorias.edit', $categoria->getId()) }}" title="Editar categoría">
                                 <i class="fa fa-pencil-alt"></i>
                             </a>
                             @if (!$categoria->isProtegida())
@@ -60,7 +60,7 @@ Categorías
                                 </button>
                              </form>
                             @else
-                            <a class="btn btn-default disabled" href="javascript::void(0)" title="Esta categoría se encuentra protegida y no puede ser borrada">
+                            <a class="btn  btn-sm btn-secondary disabled" href="javascript::void(0)" title="Esta categoría se encuentra protegida y no puede ser borrada">
                                 <i class="fa fa-trash" title="Esta categoría se encuentra protegida y no puede ser borrada"></i>
                             </a>
                             @endif

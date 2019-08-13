@@ -30,7 +30,7 @@ Menus
                         </td>
 
                         <td class="text-center">
-                            <a class="btn btn-default" href="{{ route('simplecms.menus.menu_items.index', $menu->getId()) }}" title="Ver Menú Items">
+                            <a class="btn btn-sm btn-secondary" href="{{ route('simplecms.menus.menu_items.index', $menu->getId()) }}" title="Ver Menú Items">
                                 <i class="fa fa-eye"></i>
                             </a>
                         </td>

@@ -48,8 +48,7 @@ class Imagen
     public function __construct(UploadedFile $imagenFile)
     {
         $this->created_at = new DateTime;
-        $now = DateTime::createFromFormat('U.u', microtime(true));
-        $this->filename = $now->format('u') . '-' . $imagenFile->getClientOriginalName();
+        $this->filename = $this->created_at->format('U') . '-' . $imagenFile->getClientOriginalName();
     }
 
     public function getId()

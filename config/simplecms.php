@@ -35,5 +35,8 @@ return [
             'indexLimit' => 5,
             'indexByCategoryLimit' => 5
         ]
+    ],
+    'routes' => [
+        'login' => 'publico.login'
     ]
 ];

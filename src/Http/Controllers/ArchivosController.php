@@ -156,7 +156,7 @@ class ArchivosController extends Controller
 
         if ($storageItem->getAtributos()->getExclusivo() && !Auth::check()) {
             flash(trans('Lebenlabs/SimpleCMS::archivos.exclusivo'))->error();
-            return redirect()->route('publico.login');
+            return redirect()->route(config('simplecms.routes.login'));
         }
 
         return response()->make(

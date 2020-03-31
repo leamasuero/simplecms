@@ -14,7 +14,6 @@
         "illuminate/support": "~5",
         "gedmo/doctrine-extensions": "^2.4",
         "laravel-doctrine/extensions": ">=1.0.14",
-        "laravel-doctrine/migrations": ">=1.1.10",
         "laravel-doctrine/orm": ">=1.4.10",
         "intervention/image": "^2.4",
         "laracasts/flash": "^3.0",

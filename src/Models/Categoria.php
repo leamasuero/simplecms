@@ -3,81 +3,65 @@
 namespace Lebenlabs\SimpleCMS\Models;
 
 use DateTime;
-use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
+use Illuminate\Support\Str;
 
-/**
- * @ORM\Entity(repositoryClass="Lebenlabs\SimpleCMS\Repositories\CategoriaRepository")
- * @ORM\Table(name="lebenlabs_simplecms_categorias")
- * @ORM\HasLifecycleCallbacks
- */
 class Categoria
 {
 
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
      * @var int
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", unique=true)
      * @var string
      */
     private $nombre;
 
     /**
-     * @ORM\Column(type="boolean")
      * @var boolean
      */
     private $destacada;
 
     /**
-     * @ORM\Column(type="boolean")
      * @var boolean
      */
     private $publicada;
 
     /**
-     * @ORM\Column(type="boolean", options={"default":0}))
      * @var boolean
      */
     private $protegida;
 
     /**
-     * @Gedmo\Slug(fields={"nombre", "id"})
-     * @ORM\Column(length=128, unique=true)
+     * @var string
      */
     private $slug;
 
     /**
-     * One Category has many Publicaciones. This is the inverse side.
-     * @ORM\OneToMany(targetEntity="Publicacion", mappedBy="categoria")
+     * @var array
      */
     private $publicaciones;
 
     /**
-     * @ORM\Column(type="datetime")
      * @var DateTime
      * */
-    private $created_at;
+    private $createdAt;
 
     /**
-     * @ORM\Column(type="datetime")
      * @var DateTime
      * */
-    private $updated_at;
+    private $updatedAt;
 
-    public function __construct($nombre = null)
+    public function __construct(string $nombre = null, bool $publicada = false, bool $destacada = false, bool $protegida = false)
     {
         $this->nombre = $nombre;
+        $this->setSlug($nombre);
         $this->publicada = true;
         $this->destacada = false;
         $this->protegida = false;
-        $this->created_at = new DateTime;
-        $this->updated_at = new DateTime;
+        $this->createdAt = new DateTime;
+        $this->updatedAt = new DateTime;
     }
 
     public function getId()
@@ -107,12 +91,12 @@ class Categoria
 
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
     public function getUpdatedAt()
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
     public function setId($id)
@@ -124,6 +108,7 @@ class Categoria
     public function setNombre($nombre)
     {
         $this->nombre = $nombre;
+        $this->setSlug($nombre);
         return $this;
     }
 
@@ -139,21 +124,21 @@ class Categoria
         return $this;
     }
 
-    public function setSlug($slug)
+    private function setSlug($nombre)
     {
-        $this->slug = $slug;
+        $this->slug = Str::slug($nombre);
         return $this;
     }
 
     public function setCreatedAt(DateTime $createdAt)
     {
-        $this->created_at = $createdAt;
+        $this->createdAt = $createdAt;
         return $this;
     }
 
     public function setUpdatedAt(DateTime $updatedAt)
     {
-        $this->updated_at = $updatedAt;
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 
@@ -162,7 +147,7 @@ class Categoria
      */
     function onPrePersist()
     {
-        $this->updated_at = new DateTime;
+        $this->updatedAt = new DateTime;
     }
 
     function setProtegida($protegida)

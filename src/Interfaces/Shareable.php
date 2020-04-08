@@ -9,5 +9,5 @@ interface Shareable
 
     public function getMetaImage();
     
-    public function getUrl();
+//    public function getUrl();
 }

@@ -1,4 +1,4 @@
-@extends(config('simplecms.backend.layout'))
+@extends(config('simplecms.layout.backend'))
 
 @section('title')
 Editar categoría

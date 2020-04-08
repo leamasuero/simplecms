@@ -5,55 +5,53 @@ namespace Lebenlabs\SimpleCMS\Services;
 use Doctrine\ORM\EntityManagerInterface;
 
 use Lebenlabs\SimpleCMS\Models\Categoria;
+use Lebenlabs\SimpleCMS\Repositories\CategoriaRepo;
 use Lebenlabs\SimpleCMS\Repositories\CategoriaRepository;
 
 class CategoriasService
 {
 
     /**
-     * @var EntityManagerInterface
+     * @var CategoriaRepo
      */
-    private $em;
+    private $categoriaRepo;
 
-    /**
-     * @var CategoriaRepository
-     */
-    private $categoriaRepository;
-
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(CategoriaRepo $categoriaRepo)
     {
-        $this->em = $em;
-        $this->categoriaRepository = $this->em->getRepository(Categoria::class);
+        $this->categoriaRepo = $categoriaRepo;
     }
 
-    public function listarCategoriasPublicacion()
+    public function lists()
     {
-        return $this->categoriaRepository->lists();
-    }
-
-    public function findAllPublicadasIndexed()
-    {
-        return $this->categoriaRepository->findAllPublicadasIndexed();
+        return $this->categoriaRepo->lists();
     }
 
     /**
      * @param int $id
      * @return Categoria
      */
-    public function findCategoria($id)
+    public function find(int $id): ?Categoria
     {
-        return $this->categoriaRepository->find($id);
+        return $this->categoriaRepo->find($id);
     }
 
-    public function buscarCategorias($q, $perPage = 20)
+    /**
+     * @param $q
+     * @param int $perPage
+     * @return \Pagerfanta\Pagerfanta
+     */
+    public function buscar(?string $q)
     {
-        return $this->categoriaRepository->buscar($q, $perPage);
+        return $this->categoriaRepo->buscar($q);
     }
 
-    public function guardarCategoria(Categoria $categoria)
+    public function guardar(Categoria $categoria)
     {
-        $this->em->persist($categoria);
-        $this->em->flush();
+        if ($categoria->getId()) {
+            return $this->categoriaRepo->update($categoria);
+        }
+
+        return $this->categoriaRepo->insert($categoria);
     }
 
     /**
@@ -62,10 +60,9 @@ class CategoriasService
      * @param Categoria $categoria
      * @return type
      */
-    public function eliminarCategoria(Categoria $categoria)
+    public function eliminar(Categoria $categoria)
     {
-        $this->em->remove($categoria);
-        $this->em->flush();
+        $this->categoriaRepo->delete($categoria);
     }
 
     /**
@@ -74,9 +71,9 @@ class CategoriasService
      * @param string $slug
      * @return type
      */
-    public function findCategoriaBySlug($slug)
+    public function findOneBySlug(string $slug): ?Categoria
     {
-        return $this->categoriaRepository->findOneBySlug($slug);
+        return $this->categoriaRepo->findOneBySlug($slug);
     }
 
     /**

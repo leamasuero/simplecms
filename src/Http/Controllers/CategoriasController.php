@@ -2,7 +2,6 @@
 
 namespace Lebenlabs\SimpleCMS\Http\Controllers;
 
-use Doctrine\ORM\EntityManager;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -10,34 +9,29 @@ use Lebenlabs\SimpleCMS\Http\Middleware\CanManagePublicaciones;
 use Lebenlabs\SimpleCMS\Http\Requests\StoreCategoriaRequest;
 use Lebenlabs\SimpleCMS\Http\Requests\UpdateCategoriaRequest;
 use Lebenlabs\SimpleCMS\Models\Categoria;
+use Lebenlabs\SimpleCMS\Repositories\CategoriaRepo;
+use Lebenlabs\SimpleCMS\Services\CategoriasService;
 use Lebenlabs\SimpleCMS\SimpleCMS;
+use Pagerfanta\View\TwitterBootstrap4View;
 
 class CategoriasController extends Controller
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
 
     /**
-     * @var Connection
+     * @var CategoriasService
      */
-    private $connection;
+    private $categoriasService;
 
     /**
      * @var SimpleCMS
      */
     private $simpleCMSProvider;
 
-    public function __construct(EntityManager $em, SimpleCMS $simpleCMSProvider)
+    public function __construct(SimpleCMS $simpleCMSProvider)
     {
-        $this->em = $em;
-
-        // Get connection to use transaction
-        $this->connection = $this->em->getConnection();
-
-        // Register services
         $this->simpleCMSProvider = $simpleCMSProvider;
+
+        $this->categoriasService = $simpleCMSProvider->getCategoriasService();
 
         // Register middleware
         $this->middleware('web');
@@ -51,14 +45,25 @@ class CategoriasController extends Controller
     public function index(Request $request)
     {
         $q = $request->get('q', null);
-        $categorias = $this->simpleCMSProvider->buscarCategorias($q);
-        $categorias->appends('q', $q);
+        $paginator = $this->categoriasService->buscar($q)
+//            ->setMaxPerPage($request->get('per_page', 10))
+            ->setCurrentPage($request->get('page', 1));
 
         if ($q) {
-            flash(trans('Lebenlabs/SimpleCMS::categorias.search_result', ['total' => $categorias->total()]))->success();
+            flash(trans('Lebenlabs/SimpleCMS::categorias.search_result', ['total' => $paginator->count()]))->success();
         }
 
-        return view('Lebenlabs/SimpleCMS::Categorias.index', compact('categorias', 'q'));
+        $categorias = $paginator->getCurrentPageResults();
+
+        $routeGenerator = function ($page) use ($request) {
+            return route('simplecms.categorias.index', [
+                'page' => $page,
+                'q' => $request->get('q')]);
+        };
+
+        $paginatorView = (new TwitterBootstrap4View())->render($paginator, $routeGenerator, ['proximity' => 3]);
+
+        return view('Lebenlabs/SimpleCMS::Categorias.index', compact('categorias', 'q', 'paginatorView'));
     }
 
     /**
@@ -68,16 +73,14 @@ class CategoriasController extends Controller
      */
     public function ajaxStore(StoreCategoriaRequest $request)
     {
-        $categoria = new Categoria();
-        $categoria->setNombre($request->get('nombre'))
+        $categoria = new Categoria($request->get('nombre'));
+        $categoria
             ->setPublicada($request->get('publicada'))
             ->setDestacada($request->get('destacada'));
 
         try {
 
-            $this->connection->beginTransaction();
-            $this->simpleCMSProvider->guardarCategoria($categoria);
-            $this->connection->commit();
+            $this->categoriasService->guardar($categoria);
 
             $reponse = [
                 'event' => class_basename(Categoria::class) . '/' . __FUNCTION__,
@@ -89,8 +92,6 @@ class CategoriasController extends Controller
             return response()->json($reponse, Response::HTTP_OK);
 
         } catch (Exception $ex) {
-
-            $this->connection->rollback();
 
             $reponse = [
                 'event' => class_basename(Categoria::class) . '/' . __FUNCTION__,
@@ -111,10 +112,11 @@ class CategoriasController extends Controller
      */
     public function edit($id)
     {
-        $categoria = $this->simpleCMSProvider->findCategoria($id);
+        $categoria = $this->categoriasService->find($id);
+
         if (!$categoria) {
             flash(trans('Lebenlabs/SimpleCMS::categorias.not_found'))->error();
-            redirect()->back();
+            return redirect()->back();
         }
 
         return view('Lebenlabs/SimpleCMS::Categorias.edit', compact('categoria'));
@@ -128,31 +130,31 @@ class CategoriasController extends Controller
      */
     public function update($id, UpdateCategoriaRequest $request)
     {
-        $categoria = $this->simpleCMSProvider->findCategoria($id);
+        $categoria = $this->categoriasService->find($id);
+
         if (!$categoria) {
             flash(trans('Lebenlabs/SimpleCMS::categorias.not_found'))->error();
             return redirect()->back();
         }
 
-        $categoria->setNombre($request->get('nombre'))
-            ->setPublicada(boolval($request->get('publicada', false)))
-            ->setDestacada(boolval($request->get('destacada', false)));
+        $categoria
+            ->setNombre($request->get('nombre'))
+            ->setPublicada((bool)$request->get('publicada'))
+            ->setDestacada((bool)$request->get('destacada'));
 
         try {
 
-            $this->connection->beginTransaction();
-            $this->simpleCMSProvider->guardarCategoria($categoria);
-            $this->connection->commit();
+            $this->categoriasService->guardar($categoria);
 
             flash(trans('Lebenlabs/SimpleCMS::categorias.update_success'))->success();
             return redirect()->route('simplecms.categorias.index');
 
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
 
-            $this->connection->rollback();
-            flash($ex->getMessage())->error();
+            flash($e->getMessage())->error();
 
-            return redirect()->back()
+            return redirect()
+                ->back()
                 ->withInput();
         }
     }
@@ -164,7 +166,8 @@ class CategoriasController extends Controller
      */
     public function destroy($id)
     {
-        $categoria = $this->simpleCMSProvider->findCategoria($id);
+        $categoria = $this->categoriasService->find($id);
+
         if (!$categoria) {
             flash(trans('Lebenlabs/SimpleCMS::categorias.not_found'))->error();
             return redirect()->back();
@@ -177,14 +180,10 @@ class CategoriasController extends Controller
 
         try {
 
-            $this->connection->beginTransaction();
-            $this->simpleCMSProvider->eliminarCategoria($categoria);
-            $this->connection->commit();
-
+            $this->categoriasService->eliminar($categoria);
             flash(trans('Lebenlabs/SimpleCMS::categorias.destroy_success'))->success();
 
         } catch (Exception $ex) {
-            $this->connection->rollback();
             flash($ex->getMessage())->error();
         }
 
@@ -208,28 +207,23 @@ class CategoriasController extends Controller
      */
     public function store(StoreCategoriaRequest $request)
     {
-        $categoria = new Categoria();
+        $categoria = new Categoria($request->get('nombre'));
 
-        $categoria->setNombre($request->get('nombre'))
-            ->setDestacada(boolval($request->get('destacada', false)))
-            ->setPublicada(boolval($request->get('publicada', false)));
+        $categoria
+            ->setDestacada((bool)$request->get('destacada', false))
+            ->setPublicada((bool)$request->get('publicada', false));
 
         try {
 
-            $this->connection->beginTransaction();
-            $this->simpleCMSProvider->guardarCategoria($categoria);
-            $this->connection->commit();
+            $this->categoriasService->guardar($categoria);
 
             flash(trans('Lebenlabs/SimpleCMS::categorias.store_success'))->success();
             return redirect()->route('simplecms.categorias.index');
 
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
 
-            $this->connection->rollback();
-            flash($ex->getMessage())->error();
-
-            return redirect()->back()
-                ->withInput();
+            flash($e->getMessage())->error();
+            return redirect()->back()->withInput();
         }
 
     }

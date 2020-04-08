@@ -11,11 +11,9 @@
     "homepage": "https://github.com/leamasuero/simplecms",
     "keywords": ["Laravel", "Lebenlabs", "SimpleCMS"],
     "require": {
-        "illuminate/support": "~5",
-        "gedmo/doctrine-extensions": "^2.4",
-        "laravel-doctrine/extensions": ">=1.0.14",
-        "laravel-doctrine/orm": ">=1.4.10",
-        "intervention/image": "^2.4",
+        "php": ">=7.1",
+        "illuminate/support": "~5.0|^6.0|^7.0",
+        "pagerfanta/pagerfanta": "^2.1",
         "laracasts/flash": "^3.0",
         "lebenlabs/simplestorage": "0.0.*"
     },

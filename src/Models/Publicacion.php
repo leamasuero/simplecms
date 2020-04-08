@@ -3,120 +3,92 @@
 namespace Lebenlabs\SimpleCMS\Models;
 
 use DateTime;
-use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
+use Illuminate\Support\Str;
 use Lebenlabs\SimpleCMS\Interfaces\Shareable;
 use Lebenlabs\SimpleStorage\Exceptions\UnStorableItemException;
 use Lebenlabs\SimpleStorage\Interfaces\Storable;
 
-/**
- * @ORM\Entity(repositoryClass="Lebenlabs\SimpleCMS\Repositories\PublicacionRepository")
- * @ORM\Table(name="lebenlabs_simplecms_publicaciones")
- * @ORM\HasLifecycleCallbacks
- */
 class Publicacion implements Shareable, Storable
 {
 
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
+     * @var int
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string")
      * @var string
      */
     private $titulo;
 
     /**
-     * @Gedmo\Slug(fields={"titulo"})
-     * @ORM\Column(length=256)
      * @var string
      */
     private $slug;
 
     /**
-     * @ORM\Column(type="string", length=1024, nullable=true)
      * @var string
      */
     private $extracto;
 
     /**
-     * @ORM\Column(type="text")
      * @var string
      */
     private $cuerpo;
 
     /**
-     * @ORM\Column(type="boolean")
      * @var boolean
      */
     private $publicada;
 
     /**
-     * @ORM\Column(type="boolean", options={"default":0}))
      * @var boolean
      */
     private $protegida;
 
     /**
-     * @ORM\Column(type="boolean")
      * @var boolean
      */
     private $destacada;
 
     /**
-     * @ORM\Column(type="boolean")
      * @var boolean
      */
     private $privada;
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="Categoria")
-     * @ORM\JoinColumn(name="categoria_id", referencedColumnName="id", nullable=false)
      * @var Categoria
      * */
     private $categoria;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Imagen", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="imagen_id", referencedColumnName="id", nullable=true, onDelete="SET NULL")
-     * @var Imagen
-     * */
-    private $imagen;
-
-    /**
-     * @ORM\Column(type="datetime")
      * @var DateTime
      * */
-    private $fecha_publicacion;
+    private $fechaPublicacion;
 
     /**
-     * @ORM\Column(type="datetime")
      * @var DateTime
      * */
-    private $created_at;
+    private $createdAt;
 
     /**
-     * @ORM\Column(type="datetime")
      * @var DateTime
      * */
-    private $updated_at;
+    private $updatedAt;
 
     public function __construct($titulo = null, $extracto = null, $cuerpo = null)
     {
         $this->titulo = $titulo;
+        $this->setSlug($titulo);
         $this->extracto = $extracto;
         $this->cuerpo = $cuerpo;
         $this->publicada = false;
         $this->destacada = false;
         $this->protegida = false;
         $this->privada = false;
-        $this->created_at = new \DateTime;
-        $this->updated_at = new \DateTime;
+        $this->createdAt = new \DateTime;
+        $this->updatedAt = new \DateTime;
     }
 
     public function getId()
@@ -127,6 +99,12 @@ class Publicacion implements Shareable, Storable
     public function getTitulo()
     {
         return $this->titulo;
+    }
+
+    private function setSlug($titulo)
+    {
+        $this->slug = Str::slug($titulo);
+        return $this;
     }
 
     public function getSlug()
@@ -169,47 +147,19 @@ class Publicacion implements Shareable, Storable
         return $this->categoria;
     }
 
-    public function getCategoriaId()
+    public function getFechaPublicacion(): ?DateTime
     {
-        return $this->categoria ? $this->categoria->getId() : null;
+        return $this->fechaPublicacion;
     }
 
-    public function getFechaPublicacion()
+    public function getCreatedAt(): DateTime
     {
-        return $this->fecha_publicacion;
+        return $this->createdAt;
     }
 
-    public function getFechaPublicacionFormat($format = 'just-date')
+    public function getUpdatedAt(): DateTime
     {
-        if ($this->fecha_publicacion) {
-            return $this->fecha_publicacion->format(config('simplecms.formats.' . $format));
-        }
-
-        return null;
-    }
-
-    public function getCreatedAt()
-    {
-        return $this->created_at;
-    }
-
-    public function getCreatedAtFormat($format = 'just-date')
-    {
-        if ($this->created_at) {
-            return $this->created_at->format(config('simplecms.formats.' . $format));
-        }
-
-        return null;
-    }
-
-    public function getUrl()
-    {
-        return route('publico.publicaciones.show', $this->getSlug());
-    }
-
-    public function getUpdatedAt()
-    {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
     /**
@@ -243,6 +193,7 @@ class Publicacion implements Shareable, Storable
     public function setTitulo($titulo)
     {
         $this->titulo = $titulo;
+        $this->setSlug($titulo);
         return $this;
     }
 
@@ -287,38 +238,22 @@ class Publicacion implements Shareable, Storable
         return $this;
     }
 
-    public function setFechaPublicacion($fecha_publicacion = null)
+    public function setFechaPublicacion(DateTime $fechaPublicacion)
     {
-
-        if ($fecha_publicacion != null) {
-
-            if (!($fecha_publicacion instanceof DateTime)) {
-                $fecha_publicacion = DateTime::createFromFormat(config('simplecms.formats.just-date'), $fecha_publicacion);
-            }
-        }
-
-        $this->fecha_publicacion = $fecha_publicacion;
+        $this->fechaPublicacion = $fechaPublicacion;
         return $this;
     }
 
-    public function setCreatedAt(DateTime $created_at)
+    public function setCreatedAt(DateTime $createdAt)
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function setUpdatedAt(DateTime $updated_at)
+    public function setUpdatedAt(DateTime $updatedAt)
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
         return $this;
-    }
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function onPrePersist()
-    {
-        $this->updated_at = new DateTime;
     }
 
     public function __toString()
@@ -347,7 +282,8 @@ class Publicacion implements Shareable, Storable
         if (!$this->getId()) {
             throw new UnStorableItemException();
         }
-        return get_class($this) . $this->getId();
+
+        return sprintf("%s:%s", get_class($this), $this->getId());
     }
 
     public function getMetaDescription()

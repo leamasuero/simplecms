@@ -14,7 +14,7 @@
     <div class="form-group">
         <label class="col-md-2 control-label" for="destacada"></label>
         <div class="input-group col-md-9">
-            {{ Form::checkbox('destacada', 'true', old('destacada', $categoria->isDestacada()), ['id' => 'destacada']) }}
+            {!!  checkbox('destacada', 'true', old('destacada', $categoria->isDestacada()), ['id' => 'destacada']) !!}
             &nbsp;&nbsp;<label for="destacada">Destacada</label>
         </div>
     </div>
@@ -22,7 +22,7 @@
     <div class="form-group">
         <label class="col-md-2 control-label" for="publicada"></label>
         <div class="input-group col-md-9">
-            {{ Form::checkbox('publicada', 'true', old('publicada', $categoria->isPublicada()), ['id' => 'publicada']) }}
+            {!! checkbox('publicada', 'true', old('publicada', $categoria->isPublicada()), ['id' => 'publicada']) !!}
             &nbsp;&nbsp;<label for="publicada">Publicada</label>
         </div>
     </div>

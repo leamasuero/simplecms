@@ -9,34 +9,27 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Lebenlabs\SimpleCMS\Http\Middleware\CanManagePublicaciones;
 use Lebenlabs\SimpleCMS\Http\Requests\StoreArchivosRequest;
+use Lebenlabs\SimpleCMS\SimpleCMS;
 use Lebenlabs\SimpleStorage\Services\SimpleStorageService;
 
 class ArchivosController extends Controller
 {
 
     /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
      * @var SimpleStorageService
      */
-    private $storage;
+    private $storageService;
 
-    public function __construct(EntityManager $em, SimpleStorageService $storage)
+    /**
+     * @var SimpleCMS
+     */
+    private $simpleCmsService;
+
+    public function __construct(SimpleCMS $simpleCMSService, SimpleStorageService $storageService)
     {
-        $this->em = $em;
+        $this->storageService = $storageService;
 
-        // Get connection to use transaction
-        $this->connection = $this->em->getConnection();
-
-        $this->storage = $storage;
+        $this->simpleCmsService = $simpleCMSService;
 
         // Register middleware
         $this->middleware('web');
@@ -49,8 +42,8 @@ class ArchivosController extends Controller
      */
     public function create(Request $request)
     {
-        $entidad = $this->em
-            ->getRepository($request->get('entidad'))
+        $entidad = $this->simpleCmsService
+            ->getService($request->get('entidad'))
             ->find($request->get('entidad_id'));
 
         if (!$entidad) {
@@ -58,7 +51,7 @@ class ArchivosController extends Controller
             return redirect()->route('simplecms.publicaciones.index');
         }
 
-        $archivos = $this->storage->get($entidad);
+        $archivos = $this->storageService->get($entidad);
 
         return view('Lebenlabs/SimpleCMS::Archivos.create', compact('entidad', 'archivos'));
     }
@@ -70,7 +63,9 @@ class ArchivosController extends Controller
      */
     public function store(StoreArchivosRequest $request)
     {
-        $entidad = $this->em->getRepository($request->get('entidad'))->find($request->get('entidad_id'));
+        $entidad = $this->simpleCmsService
+            ->getService($request->get('entidad'))
+            ->find($request->get('entidad_id'));
 
         if (!$entidad) {
             flash(trans('Lebenlabs/SimpleCMS::archivos.entidad_not_found'))->error();
@@ -79,25 +74,19 @@ class ArchivosController extends Controller
 
         try {
 
-            $this->connection->beginTransaction();
             $atributos = $request->get('atributos', []);
-
             foreach ($request->file('archivos') as $archivo) {
-                $this->storage->put($entidad, $archivo, $atributos);
+                $this->storageService->put($entidad, $archivo, $atributos);
             }
 
-            $this->connection->commit();
-
             flash(trans('Lebenlabs/SimpleCMS::archivos.store_success'))->success();
+            return redirect()->route('simplecms.archivos.create', ['entidad' => $request->get('entidad'), 'entidad_id' => $request->get('entidad_id')]);
 
-        } catch (Exception $ex) {
-
-            $this->connection->rollback();
-            flash($ex->getMessage())->error();
+        } catch (Exception $e) {
+            flash($e->getMessage())->error();
+            return redirect()->back();
         }
 
-
-        return redirect(route('simplecms.archivos.create', ['entidad' => $request->get('entidad'), 'entidad_id' => $request->get('entidad_id')]));
     }
 
     /**
@@ -107,10 +96,7 @@ class ArchivosController extends Controller
     public function destroy($id)
     {
         try {
-
-            $this->connection->beginTransaction();
-            $this->storage->remove($id);
-            $this->connection->commit();
+            $this->storageService->remove($id);
 
             flash(trans('Lebenlabs/SimpleCMS::archivos.destroy_success'))->success();
         } catch (Exception $e) {
@@ -124,17 +110,15 @@ class ArchivosController extends Controller
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function exclusivo(Request $request, $id)
+    public function updateExclusivo($id, Request $request)
     {
         try {
 
             $atributos = [
-                'exclusivo' => boolval($request->get('exclusivo', 0))
+                'exclusivo' => (bool)$request->get('exclusivo', 0)
             ];
 
-            $this->connection->beginTransaction();
-            $this->storage->setAtributos($id, $atributos);
-            $this->connection->commit();
+            $this->storageService->setAtributos($id, $atributos);
 
             flash(trans('Lebenlabs/SimpleCMS::archivos.exclusivo_success'))->success();
         } catch (Exception $e) {
@@ -150,20 +134,20 @@ class ArchivosController extends Controller
      * @throws \Lebenlabs\SimpleStorage\Exceptions\NotFoundException
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function show($id)
+    public function show(int $id)
     {
-        $storageItem = $this->storage->find($id);
+        $storageItem = $this->storageService->find($id);
 
-        if ($storageItem->getAtributos()->getExclusivo() && !Auth::check()) {
-            flash(trans('Lebenlabs/SimpleCMS::archivos.exclusivo'))->error();
-            return redirect()->route(config('simplecms.routes.login'));
-        }
+//        if ($storageItem->getAtributos()->getExclusivo() && !Auth::check()) {
+//            flash(trans('Lebenlabs/SimpleCMS::archivos.exclusivo'))->error();
+//            return redirect()->route(config('simplecms.routes.login'));
+//        }
 
         return response()->make(
             $storageItem->getArchivo(),
             Response::HTTP_OK,
             [
-                'Content-Type' => $this->storage->mimeType($storageItem),
+                'Content-Type' => $this->storageService->mimeType($storageItem),
                 'Content-Disposition' => "attachment;filename={$storageItem->getOriginalFilename()}"
             ]
         );

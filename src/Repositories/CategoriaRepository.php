@@ -36,7 +36,6 @@ class CategoriaRepository extends EntityRepository
     }
 
     /**
-     *
      * @param type $q
      * @param type $perPage
      * @return LengthAwarePaginator

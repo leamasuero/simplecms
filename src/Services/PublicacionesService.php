@@ -4,61 +4,61 @@ namespace Lebenlabs\SimpleCMS\Services;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Lebenlabs\SimpleCMS\Models\Publicacion;
+use Lebenlabs\SimpleCMS\Repositories\PublicacionRepo;
 use Lebenlabs\SimpleCMS\Repositories\PublicacionRepository;
+use Lebenlabs\SimpleStorage\Services\SimpleStorageService;
 
 class PublicacionesService
 {
 
     /**
-     * @var EntityManagerInterface
+     * @var PublicacionRepo
      */
-    private $em;
+    private $publicacionRepo;
 
     /**
-     * @var PublicacionRepository
+     * @var SimpleStorageService
      */
-    private $publicacionRepository;
+    private $simpleStorageService;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(PublicacionRepo $publicacionRepo, SimpleStorageService $simpletStorageService)
     {
-        $this->em = $em;
-        $this->publicacionRepository = $this->em->getRepository(Publicacion::class);
+        $this->publicacionRepo = $publicacionRepo;
+        $this->simpleStorageService = $simpletStorageService;
     }
 
-    public function buscarPublicacionesPublicadas($q, $perPage = 20)
+    public function buscarPublicadas(?string $q)
     {
-        return $this->publicacionRepository->buscarPublicadas($q, $perPage);
+        return $this->publicacionRepo->buscar($q, ['publicada' => 1]);
     }
 
-    public function buscarPublicaciones($q, $perPage = 20)
+    public function buscar(?string $q, array $criteria = [])
     {
-        return $this->publicacionRepository->buscar($q, $perPage);
+        return $this->publicacionRepo->buscar($q, $criteria);
     }
 
-    public function buscarPublicacionesByPrivada($q, $privada, $perPage = 20)
+    public function buscarPrivadas(?string $q)
     {
-        return $this->publicacionRepository->buscarByPrivada($q, $privada, $perPage);
+        return $this->publicacionRepo->buscar($q, ['privada' => 1]);
     }
 
-    public function findAllPublicaciones()
+    public function buscarDestacadas(?string $q, array $criteria = ['destacada' => 1, 'privada' => 0, 'publicada' => 1]): array
     {
-        return $this->publicacionRepository->findAll();
+        return $this->publicacionRepo->buscar($q, $criteria);
     }
 
-    public function findAllPublicacionesDestacadas($perPage = 5)
+    public function find($id): ?Publicacion
     {
-        return $this->publicacionRepository->findDestacadas($perPage);
+        return $this->publicacionRepo->find($id);
     }
 
-    public function findPublicacion($id)
+    public function guardar(Publicacion $publicacion)
     {
-        return $this->publicacionRepository->find($id);
-    }
+        if ($publicacion->getId()) {
+            return $this->publicacionRepo->update($publicacion);
+        }
 
-    public function guardarPublicacion(Publicacion $publicacion)
-    {
-        $this->em->persist($publicacion);
-        $this->em->flush();
+        return $this->publicacionRepo->insert($publicacion);
     }
 
     /**
@@ -67,49 +67,38 @@ class PublicacionesService
      * @param Publicacion $publicacion
      * @return type
      */
-    public function eliminarPublicacion(Publicacion $publicacion)
+    public function eliminar(Publicacion $publicacion)
     {
-        $this->em->remove($publicacion);
-        $this->em->flush();
+//        // Obtenemos la imagen asociada a la publicacion
+//        $imagen = $publicacion->getImagen();
+//        if ($imagen) {
+//            // Eliminamos la imagen
+//            $this->eliminarImagen($imagen);
+//        }
+
+        // Obtenemos los archivos asociados a la publicacion
+        $archivos = $this->simpleStorageService->get($publicacion);
+
+        foreach ($archivos as $archivo) {
+            $this->simpleStorageService->remove($archivo->getId());
+        }
+
+        return $this->publicacionRepo->delete($publicacion);
     }
 
     /**
      * Retorna la publicación con el Slug pasado como parametro
      *
      * @param string $slug
-     * @return type
+     * @return Publicacion
      */
-    public function findPublicacionBySlug($slug)
+    public function findPublicacionBySlug(string $slug): ?Publicacion
     {
-        return $this->publicacionRepository->findOneBySlug($slug);
+        return $this->publicacionRepo->findOneBySlug($slug);
     }
 
-    /**
-     * Retorna true si la $publicacion pasada como parametro es visible para
-     * el $user
-     *
-     * @param Publicacion $publicacion
-     * @return boolean
-     */
-    public function publicacionIsVisibleForUser(Publicacion $publicacion)
+    public function buscarPublicadasByCategoriaSlug($slug)
     {
-
-
-        return false;
-    }
-
-    public function buscarPublicacionesByCategoriaSlug($slug, $perPage = 20)
-    {
-        return $this->publicacionRepository->buscarPublicacionesByCategoriaSlug($slug, $perPage);
-    }
-
-
-    /**
-     * @param int $count
-     * @return array
-     */
-    public function getPublicacionesDestacadas($count = 5)
-    {
-        return $this->publicacionRepository->findBy(['destacada' => 1, 'publicada' => 1, 'privada' => 0], ['id' => 'desc'], $count, 0);
+        return $this->publicacionRepo->buscarPublicadasByCategoriaSlug($slug);
     }
 }

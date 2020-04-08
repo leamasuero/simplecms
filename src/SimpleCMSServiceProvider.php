@@ -3,6 +3,7 @@
 namespace Lebenlabs\SimpleCMS;
 
 use Illuminate\Contracts\Cache\Repository;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Intervention\Image\ImageManager;
 use Lebenlabs\SimpleCMS\Console\Commands\CleanDatabaseCommand;
@@ -13,6 +14,7 @@ use Lebenlabs\SimpleCMS\Http\Middleware\CanEditMenu;
 use Lebenlabs\SimpleCMS\Http\Middleware\CanViewPublicacion;
 use Lebenlabs\SimpleCMS\Http\Middleware\MenuMenuItemExisteYPertenece;
 use Lebenlabs\SimpleCMS\Http\Middleware\PublicacionExiste;
+use Lebenlabs\SimpleCMS\Repositories\CategoriaRepo;
 use Lebenlabs\SimpleStorage\Services\SimpleStorageService;
 
 class SimpleCMSServiceProvider extends ServiceProvider
@@ -28,31 +30,28 @@ class SimpleCMSServiceProvider extends ServiceProvider
         // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'Lebenlabs');
 
         // Load Views
-        $this->loadViewsFrom(__DIR__.'/Resources/Views', 'Lebenlabs/SimpleCMS');
+        $this->loadViewsFrom(__DIR__ . '/Resources/Views', 'Lebenlabs/SimpleCMS');
 
         // Publish views
-        $this->publishes([__DIR__.'/Resources/Views' => resource_path('views/vendor/Lebenlabs/SimpleCMS')]);
+        $this->publishes([__DIR__ . '/Resources/Views' => resource_path('views/vendor/Lebenlabs/SimpleCMS')]);
 
         // Load Translations
-        $this->loadTranslationsFrom(__DIR__.'/Resources/Lang', 'Lebenlabs/SimpleCMS');
+        $this->loadTranslationsFrom(__DIR__ . '/Resources/Lang', 'Lebenlabs/SimpleCMS');
 
         // Publish Translations
-        $this->publishes([__DIR__.'/Resources/Lang' => resource_path('lang/vendor/Lebenlabs/SimpleCMS')]);
+        $this->publishes([__DIR__ . '/Resources/Lang' => resource_path('lang/vendor/Lebenlabs/SimpleCMS')]);
 
         // Load Routes
-        $this->loadRoutesFrom(__DIR__.'/Routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/Routes/web.php');
 
         // Load Migrations
-        $this->loadMigrationsFrom(__DIR__.'/Database/Migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/Database/Migrations');
 
         // Publish Migrations
-        $this->publishes([__DIR__.'/Database/Migrations' => database_path('migrations')]);
+        $this->publishes([__DIR__ . '/Database/Migrations' => database_path('migrations')]);
 
         // Register middleware
         $router = $this->app['router'];
-        $router->pushMiddlewareToGroup('CanEditMenu', CanEditMenu::class);
-        $router->pushMiddlewareToGroup('CanEditMenuItem', CanEditMenuItem::class);
-        $router->pushMiddlewareToGroup('MenuMenuItemExisteYPertenece', MenuMenuItemExisteYPertenece::class);
         $router->pushMiddlewareToGroup('PublicacionExiste', PublicacionExiste::class);
         $router->pushMiddlewareToGroup('CanViewPublicacion', CanViewPublicacion::class);
         $router->pushMiddlewareToGroup('CanManagePublicaciones', CanManagePublicaciones::class);
@@ -71,17 +70,16 @@ class SimpleCMSServiceProvider extends ServiceProvider
     public function register()
     {
         // Merge config of simple cms package
-        $this->mergeConfigFrom(__DIR__.'/../config/simplecms.php', 'simplecms');
+        $this->mergeConfigFrom(__DIR__ . '/../config/simplecms.php', 'simplecms');
 
         // Register the service the package provides.
-        $this->app->bind(SimpleCMS::class, function() {
+        $this->app->bind(SimpleCMS::class, function () {
             return new SimpleCMS(
-                app('em'),
-                app(Repository::class),
-                app(ImageManager::class),
-                app(SimpleStorageService::class)
+                app(SimpleStorageService::class),
+                DB::connection('mysql')->getDoctrineConnection()
             );
         });
+
 
     }
 
@@ -94,7 +92,7 @@ class SimpleCMSServiceProvider extends ServiceProvider
     {
         return ['SimpleCMS'];
     }
-    
+
     /**
      * Console-specific booting.
      *
@@ -103,18 +101,18 @@ class SimpleCMSServiceProvider extends ServiceProvider
     protected function bootForConsole()
     {
         // Publishing the configuration file.
-        $this->publishes([__DIR__.'/../config/simplecms.php' => config_path('simplecms.php')]);
-        $this->publishes([__DIR__.'/../config/image.php' => config_path('image.php')]);
+        $this->publishes([__DIR__ . '/../config/simplecms.php' => config_path('simplecms.php')]);
+//        $this->publishes([__DIR__ . '/../config/image.php' => config_path('image.php')]);
 
         //Publish views
-        $this->publishes([__DIR__.'/Resources/Views' => resource_path('views/vendor/Lebenlabs/SimpleCMS')]);
+        $this->publishes([__DIR__ . '/Resources/Views' => resource_path('views/vendor/Lebenlabs/SimpleCMS')]);
 
         // Publish Migrations
-        $this->publishes([__DIR__.'/Database/Migrations' => database_path('migrations')]);
+        $this->publishes([__DIR__ . '/Database/Migrations' => database_path('migrations')]);
 
-        $this->commands([
-            CleanDatabaseCommand::class,
-            CreateMenuCommand::class
-        ]);
+//        $this->commands([
+//            CleanDatabaseCommand::class,
+//            CreateMenuCommand::class
+//        ]);
     }
 }

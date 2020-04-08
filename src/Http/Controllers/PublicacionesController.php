@@ -2,50 +2,47 @@
 
 namespace Lebenlabs\SimpleCMS\Http\Controllers;
 
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Lebenlabs\SimpleCMS\Http\Middleware\CanManagePublicaciones;
 use Lebenlabs\SimpleCMS\Http\Middleware\CanViewPublicacion;
 use Lebenlabs\SimpleCMS\Http\Middleware\PublicacionExiste;
 use Lebenlabs\SimpleCMS\Http\Requests\StorePublicacionRequest;
 use Lebenlabs\SimpleCMS\Http\Requests\UpdatePublicacionRequest;
 use Lebenlabs\SimpleCMS\Models\Publicacion;
+use Lebenlabs\SimpleCMS\Repositories\CategoriaRepo;
+use Lebenlabs\SimpleCMS\Services\CategoriasService;
+use Lebenlabs\SimpleCMS\Services\PublicacionesService;
 use Lebenlabs\SimpleCMS\SimpleCMS;
 use Lebenlabs\SimpleStorage\Services\SimpleStorageService;
+use Pagerfanta\View\TwitterBootstrap4View;
 
 class PublicacionesController extends Controller
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * @var SimpleStorageService
-     */
-    private $storage;
 
     /**
      * @var SimpleCMS
      */
-    private $simpleCMSProvider;
+    private $simpleCMSService;
 
-    public function __construct(EntityManager $em, SimpleCMS $simpleCMSProvider, SimpleStorageService $storage)
+    /**
+     * @var PublicacionesService
+     */
+    private $publicacionesService;
+    /**
+     * @var CategoriasService
+     */
+    private $categoriasService;
+
+    public function __construct(SimpleCMS $simpleCMSService)
     {
-        $this->em = $em;
-
-        // Get connection to use transaction
-        $this->connection = $this->em->getConnection();
-
         // Register services
-        $this->simpleCMSProvider = $simpleCMSProvider;
-        $this->storage = $storage;
+        $this->simpleCMSService = $simpleCMSService;
+        $this->categoriasService = $simpleCMSService->getCategoriasService();
+        $this->publicacionesService = $simpleCMSService->getPublicacionesService();
 
         // Register middleware
         $this->middleware('web');
@@ -53,10 +50,7 @@ class PublicacionesController extends Controller
         $this->middleware(CanManagePublicaciones::class, ['only' => ['edit', 'update', 'create', 'store', 'destroy', 'index']]);
 
         //Chequea que los parametros de publicacion para ver si existe y sino retorna error
-        $this->middleware(PublicacionExiste::class, ['only' => ['edit', 'update', 'destroy']]);
-
-        //Chequea que los parametros de publicacion para ver si existe y sino retorna error
-        $this->middleware(CanViewPublicacion::class, ['only' => ['publicShow']]);
+//        $this->middleware(PublicacionExiste::class, ['only' => ['edit', 'update', 'destroy']]);
     }
 
     /**
@@ -68,21 +62,26 @@ class PublicacionesController extends Controller
         $q = $request->get('q', null);
         $privada = $request->get('privada', null);
 
-        if ($privada != null) {
-            $publicaciones = $this->simpleCMSProvider->buscarPublicacionesByPrivada($q, $privada, 20);
-        } else {
-            $publicaciones = $this->simpleCMSProvider->buscarPublicaciones($q, 20);
-        }
+        $paginator = $this->publicacionesService->buscar($q, compact('privada'))
+//            ->setMaxPerPage($request->get('per_page', 1))
+            ->setCurrentPage($request->get('page', 1));
 
-        $publicaciones
-            ->appends('q', $q)
-            ->appends('privada', $privada);
+        $publicaciones = $paginator->getCurrentPageResults();
 
         if ($q) {
-            flash(trans('Lebenlabs/SimpleCMS::publicaciones.search_result', ['total' => $publicaciones->total()]))->success();
+            flash(trans('Lebenlabs/SimpleCMS::publicaciones.search_result', ['total' => $paginator->count()]))->success();
         }
 
-        return view('Lebenlabs/SimpleCMS::Publicaciones.index', compact('publicaciones', 'q'));
+        $routeGenerator = function ($page) use ($request) {
+            return route('simplecms.publicaciones.index', [
+                'page' => $page,
+                'q' => $request->get('q'),
+                'privada' => $request->get('privada'),
+            ]);
+        };
+
+        $paginatorView = (new TwitterBootstrap4View())->render($paginator, $routeGenerator, ['proximity' => 3]);
+        return view('Lebenlabs/SimpleCMS::Publicaciones.index', compact('publicaciones', 'q', 'paginatorView'));
     }
 
     /**
@@ -92,7 +91,7 @@ class PublicacionesController extends Controller
     {
         $publicacion = new Publicacion;
 
-        $categorias = $this->simpleCMSProvider->listarCategoriasPublicacion();
+        $categorias = $this->categoriasService->lists();
 
         return view('Lebenlabs/SimpleCMS::Publicaciones.create', compact('publicacion', 'categorias'));
     }
@@ -100,36 +99,33 @@ class PublicacionesController extends Controller
     /**
      * @param StorePublicacionRequest $request
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function store(StorePublicacionRequest $request)
     {
         $publicacion = new Publicacion();
-        $categoria = $this->simpleCMSProvider->findCategoria($request->get('categoria'));
 
-        $publicacion->setTitulo($request->get('titulo'))
+        $categoria = $this->categoriasService->find($request->get('categoria'));
+
+        $publicacion
+            ->setTitulo($request->get('titulo'))
             ->setExtracto($request->get('extracto'))
             ->setCuerpo($request->get('cuerpo'))
-            ->setFechaPublicacion($request->get('fecha_publicacion'))
-            ->setDestacada(boolval($request->get('destacada', false)))
-            ->setPrivada(boolval($request->get('privada', false)))
-            ->setPublicada(boolval($request->get('publicada', false)))
+            ->setFechaPublicacion(\DateTime::createFromFormat('Y-m-d', $request->get('fecha_publicacion')))
+            ->setDestacada((bool)$request->get('destacada', false))
+            ->setPrivada((bool)$request->get('privada', false))
+            ->setPublicada((bool)$request->get('publicada', false))
             ->setCategoria($categoria);
 
         try {
 
-            $this->connection->beginTransaction();
-            $this->simpleCMSProvider->guardarPublicacion($publicacion);
-            $this->connection->commit();
+            $this->publicacionesService->guardar($publicacion);
 
             flash(trans('Lebenlabs/SimpleCMS::publicaciones.store_success'))->success();
             return redirect()->route('simplecms.publicaciones.index');
 
-        } catch (Exception $ex) {
+        } catch (Exception $e) {
 
-            $this->connection->rollback();
-            flash($ex->getMessage())->error();
-
+            flash($e->getMessage())->error();
             return redirect()->back()
                 ->withInput();
         }
@@ -141,8 +137,8 @@ class PublicacionesController extends Controller
      */
     public function edit($id)
     {
-        $publicacion = $this->simpleCMSProvider->findPublicacion($id);
-        $categorias = $this->simpleCMSProvider->listarCategoriasPublicacion();
+        $publicacion = $this->publicacionesService->find($id);
+        $categorias = $this->categoriasService->lists();
 
         return view('Lebenlabs/SimpleCMS::Publicaciones.edit', compact('publicacion', 'categorias'));
     }
@@ -151,109 +147,54 @@ class PublicacionesController extends Controller
      * @param $id
      * @param UpdatePublicacionRequest $request
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function update($id, UpdatePublicacionRequest $request)
     {
-        $publicacion = $this->simpleCMSProvider->findPublicacion($id);
-        $categoria = $this->simpleCMSProvider->findCategoria($request->get('categoria'));
+        $publicacion = $this->publicacionesService->find($id);
+        $categoria = $this->categoriasService->find($request->get('categoria'));
 
-        $publicacion->setTitulo($request->get('titulo'))
+        $publicacion
+            ->setTitulo($request->get('titulo'))
             ->setExtracto($request->get('extracto'))
             ->setCuerpo($request->get('cuerpo'))
-            ->setFechaPublicacion($request->get('fecha_publicacion'))
-            ->setDestacada(boolval($request->get('destacada', false)))
-            ->setPrivada(boolval($request->get('privada', false)))
-            ->setPublicada(boolval($request->get('publicada', false)));
-
-        $publicacion->setCategoria($categoria);
+            ->setFechaPublicacion(\DateTime::createFromFormat('Y-m-d', $request->get('fecha_publicacion')))
+            ->setDestacada((bool)$request->get('destacada'))
+            ->setPrivada((bool)$request->get('privada'))
+            ->setPublicada((bool)$request->get('publicada'))
+            ->setCategoria($categoria);
 
         try {
 
-            $this->connection->beginTransaction();
-            $this->simpleCMSProvider->guardarPublicacion($publicacion);
-            $this->connection->commit();
+            $this->publicacionesService->guardar($publicacion);
 
             flash(trans('Lebenlabs/SimpleCMS::publicaciones.update_success'))->success();
             return redirect()->route('simplecms.publicaciones.index');
 
-        } catch (Exception $ex) {
-
-            $this->connection->rollback();
-            flash($ex->getMessage())->error();
-
-            $categorias = $this->simpleCMSProvider->listarCategoriasPublicacion();
-
-            return redirect()->back()
-                ->withInput();
+        } catch (Exception $e) {
+            flash($e->getMessage())->error();
+            return redirect()->back()->withInput();
         }
     }
 
     /**
      * @param $id
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Doctrine\DBAL\ConnectionException
      */
     public function destroy($id)
     {
-        $publicacion = $this->simpleCMSProvider->findPublicacion($id);
+        $publicacion = $this->publicacionesService->find($id);
 
         try {
 
-            $this->connection->beginTransaction();
-            $this->simpleCMSProvider->eliminarPublicacion($publicacion);
-            $this->connection->commit();
+            $this->publicacionesService->eliminar($publicacion);
 
             flash(trans('Lebenlabs/SimpleCMS::publicaciones.destroy_success'))->success();
+            return redirect()->route('simplecms.publicaciones.index');
 
         } catch (Exception $ex) {
-            $this->connection->rollback();
             flash($ex->getMessage())->error();
+            return redirect()->back();
         }
 
-        return redirect()->route('simplecms.publicaciones.index');
     }
-
-    /**
-     * @param $slug
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function publicShow($slug)
-    {
-        $publicacion    = $this->simpleCMSProvider->findPublicacionBySlug($slug);
-        $archivos       = $this->storage->get($publicacion);
-
-        return view('Lebenlabs/SimpleCMS::Publicaciones.public-show', compact('publicacion', 'archivos'));
-    }
-
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function publicIndex()
-    {
-        $publicacionesFrontendLimit =  config('simplecms.publicaciones.frontend.indexLimit', 5);
-        $publicaciones = $this->simpleCMSProvider->buscarPublicacionesPublicadas(null, $publicacionesFrontendLimit);
-        $categorias = $this->simpleCMSProvider->findAllCategoriasPublicadasIndexed();
-
-        return view('Lebenlabs/SimpleCMS::Publicaciones.public-index', compact('publicaciones', 'categorias'));
-    }
-
-    /**
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function publicIndexByCategoriaSlug($slug)
-    {
-        $categoria = $this->simpleCMSProvider->findCategoriaBySlug($slug);
-
-        if (!$categoria) {
-            abort(404);
-        }
-
-        $publicacionesFrontendLimit =  config('simplecms.publicaciones.frontend.indexByCategoryLimit', 5);
-        $publicaciones = $this->simpleCMSProvider->buscarPublicacionesByCategoriaSlug($slug, $publicacionesFrontendLimit);
-        $categorias = $this->simpleCMSProvider->findAllCategoriasPublicadasIndexed();
-
-        return view('Lebenlabs/SimpleCMS::Publicaciones.public-index-by-categoria-slug', compact('publicaciones', 'categorias', 'categoria'));
-    }
-
 }

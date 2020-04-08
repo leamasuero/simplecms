@@ -1,47 +1,48 @@
-@extends(config('simplecms.backend.layout'))
+@extends(config('simplecms.layout.backend'))
 
 @section('title')
-Nueva publicación
+    Nueva publicación
 @stop
+
+
 
 @section('content')
 
-<div class="row">
-    <div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12">
 
-        <div class="panel panel-primary">
-            <div class="panel-heading panel-heading-with-buttons">
-                <a class="btn btn-default pull-left" href="{{ route('simplecms.publicaciones.index') }}" >
-                    <i class="fa fa-arrow-circle-left"></i>
-                    Volver
-                </a>
-                &nbsp;
-                Nueva publicación
-            </div>
-            <div class="panel-body">
+            <div class="panel panel-primary card card-primary">
+                <div class="panel-heading panel-heading-with-buttons card-header">
+                    Nueva publicación
+                </div>
+                <div class="panel-body card-body">
 
-                <form action="{{ route('simplecms.publicaciones.store', $publicacion->getId()) }}" class="form-horizontal" method="POST">
-                    {{ csrf_field() }}
+                    <form action="{{ route('simplecms.publicaciones.store', $publicacion->getId()) }}"
+                          class="form-horizontal" method="POST">
+                        {{ csrf_field() }}
 
-                    <input type="hidden" value="{{ $publicacion->getId()}}" name="id" />
+                        <input type="hidden" value="{{ $publicacion->getId()}}" name="id"/>
 
-                    @include('Lebenlabs/SimpleCMS::Publicaciones.form')
+                        @include('Lebenlabs/SimpleCMS::Publicaciones.form')
 
-                </form>
+                    </form>
 
 
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-@include('Lebenlabs/SimpleCMS::CategoriasPublicacion.modal-form')
 
 @endsection
 
 @section('footer-scripts')
-<!--    <script>
-        $('#nueva-categoria form').modalForm({limpiarFormEnabled: true});
-    </script>-->
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.summernote.cuerpo').summernote(SummerNoteHelper.defultConfig);
+        });
+    </script>
 
 @endsection
+
+

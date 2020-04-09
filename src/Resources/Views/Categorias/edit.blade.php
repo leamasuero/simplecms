@@ -9,16 +9,11 @@ Editar categoría
 <div class="row">
     <div class="col-md-12">
 
-        <div class="panel panel-primary">
-            <div class="panel-heading panel-heading-with-buttons">
-                <a class="btn btn-default pull-left" href="{{ route('simplecms.categorias.index') }}" >
-                    <i class="fa fa-arrow-circle-left"></i>
-                    Volver
-                </a>
-                &nbsp;
+        <div class="panel panel-primary card">
+            <div class="panel-heading panel-heading-with-buttons card-header">
                 Editar categoría
             </div>
-            <div class="panel-body">
+            <div class="panel-body card-body">
 
                 <form action="{{ route('simplecms.categorias.update', $categoria->getId()) }}" class="form-horizontal" method="POST">
                     {{ csrf_field() }}

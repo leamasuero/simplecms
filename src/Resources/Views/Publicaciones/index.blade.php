@@ -24,12 +24,12 @@
                         <th class="text-center">Publicada</th>
                         <th class="text-center">Destacada</th>
                         <th class="text-center">Privada</th>
+                        <th class="text-center">Fecha de publicación</th>
                         <th class="text-center w200px">Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($publicaciones as $row)
-                        @php($publicacion = \Lebenlabs\SimpleCMS\Factories\PublicacionFactory::create($row))
+                    @foreach($publicaciones as $publicacion)
                         <tr>
                             <th scope="row">
                                 {{ $publicacion->getId() }}
@@ -56,6 +56,9 @@
                                 @else
                                     No
                                 @endif
+                            </td>
+                            <td class="text-center">
+                                @fecha($publicacion->getFechaPublicacion())
                             </td>
                             <td class="text-center">
 

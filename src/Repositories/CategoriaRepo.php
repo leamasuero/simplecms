@@ -4,10 +4,9 @@
 namespace Lebenlabs\SimpleCMS\Repositories;
 
 use Doctrine\DBAL\Connection;
-use Lebenlabs\SimpleCMS\Factories\CategoriaFactory;
+use Lebenlabs\SimpleCMS\Adapters\SimpleCmsAdapter;
+use Lebenlabs\SimpleCMS\Transformers\CategoriaTransformer;
 use Lebenlabs\SimpleCMS\Models\Categoria;
-use Pagerfanta\Adapter\DoctrineDbalAdapter;
-use Pagerfanta\Adapter\DoctrineDbalSingleTableAdapter;
 use Pagerfanta\Pagerfanta;
 
 class CategoriaRepo
@@ -17,9 +16,15 @@ class CategoriaRepo
      */
     private $connection;
 
+    /**
+     * @var CategoriaTransformer
+     */
+    private $categoriaTransformer;
+
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
+        $this->categoriaTransformer = new CategoriaTransformer();
     }
 
     /**
@@ -27,11 +32,11 @@ class CategoriaRepo
      * @param int $perPage
      * @return Pagerfanta
      */
-    public function buscar(?string $q)
+    public function buscar(?string $q): Pagerfanta
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
-            ->from('lebenlabs_simplecms_categorias', 'Categoria')
+            ->from('simplecms_categorias', 'Categoria')
             ->orderBy('Categoria.id', 'desc');
 
         if ($q) {
@@ -39,14 +44,19 @@ class CategoriaRepo
                 ->setParameter('q', "%{$q}%");
         }
 
-        return new Pagerfanta(new DoctrineDbalSingleTableAdapter($qb, 'Categoria.id'));
+        $countQueryBuilderModifier = function ($queryBuilder) {
+            $queryBuilder->select('COUNT(DISTINCT Categoria.id) AS total_results')
+                ->setMaxResults(1);
+        };
+
+        return new Pagerfanta(new SimpleCmsAdapter($qb, $countQueryBuilderModifier, new CategoriaTransformer()));
     }
 
     public function find(int $id): Categoria
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
-            ->from('lebenlabs_simplecms_categorias')
+            ->from('simplecms_categorias')
             ->where('id = :id')
             ->setParameter(':id', $id)->setMaxResults(1);
 
@@ -56,14 +66,14 @@ class CategoriaRepo
             return null;
         }
 
-        return CategoriaFactory::create($st->fetch());
+        return $this->categoriaTransformer->transform($st->fetch());
     }
 
     public function lists(): array
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('id, nombre')
-            ->from('lebenlabs_simplecms_categorias');
+            ->from('simplecms_categorias');
 
         $st = $qb->execute();
 
@@ -73,13 +83,14 @@ class CategoriaRepo
     public function insert(Categoria $categoria)
     {
         $qb = $this->connection->createQueryBuilder();
-        $qb->insert('lebenlabs_simplecms_categorias')
+        $qb->insert('simplecms_categorias')
             ->values(
                 [
                     'nombre' => ':nombre',
                     'slug' => ':slug',
                     'destacada' => ':destacada',
                     'publicada' => ':publicada',
+                    'protegida' => ':protegida',
                     'created_at' => ':created_at',
                     'updated_at' => ':updated_at',
                 ]
@@ -89,6 +100,7 @@ class CategoriaRepo
                 'slug' => $categoria->getSlug(),
                 'destacada' => (int)$categoria->getDestacada(),
                 'publicada' => (int)$categoria->getPublicada(),
+                'protegida' => (int)$categoria->isProtegida(),
                 'created_at' => $categoria->getCreatedAt()->format('Y-m-d'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
@@ -100,7 +112,7 @@ class CategoriaRepo
     {
         $qb = $this->connection->createQueryBuilder();
 
-        $qb->update('lebenlabs_simplecms_categorias')
+        $qb->update('simplecms_categorias')
             ->set('nombre', ':nombre')
             ->set('slug', ':slug')
             ->set('destacada', ':destacada')
@@ -123,7 +135,7 @@ class CategoriaRepo
     {
         $qb = $this->connection->createQueryBuilder();
 
-        $qb->delete('lebenlabs_simplecms_categorias')
+        $qb->delete('simplecms_categorias')
             ->where('id = :id')
             ->setParameters([
                 'id' => $categoria->getId(),
@@ -136,9 +148,10 @@ class CategoriaRepo
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
-            ->from('lebenlabs_simplecms_categorias')
+            ->from('simplecms_categorias')
             ->where('slug = :slug')
-            ->setParameter(':slug', $slug)->setMaxResults(1);
+            ->setParameter(':slug', $slug)
+            ->setMaxResults(1);
 
         $st = $qb->execute();
 
@@ -146,7 +159,7 @@ class CategoriaRepo
             return null;
         }
 
-        return CategoriaFactory::create($st->fetch());
+        return $this->categoriaTransformer->transform($st->fetch());
     }
 
 }

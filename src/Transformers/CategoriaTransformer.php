@@ -1,12 +1,13 @@
 <?php
 
-namespace Lebenlabs\SimpleCMS\Factories;
+namespace Lebenlabs\SimpleCMS\Transformers;
 
+use Lebenlabs\SimpleCMS\Interfaces\Transformer;
 use Lebenlabs\SimpleCMS\Models\Categoria;
 
-class CategoriaFactory
+class CategoriaTransformer implements Transformer
 {
-    public static function create(array $row): Categoria
+    public function transform(array $row): Categoria
     {
         $categoria = new Categoria(
             $row['nombre'],
@@ -22,11 +23,11 @@ class CategoriaFactory
 
     }
 
-    public static function transform(array $rows): array
+    public function transformCollection(iterable $rows): iterable
     {
         $categorias = [];
         foreach ($rows as $row) {
-            $categorias[] = self::create($row);
+            $categorias[] = self::transform($row);
         }
 
         return $categorias;

@@ -2,11 +2,9 @@
 
 namespace Lebenlabs\SimpleCMS\Services;
 
-use Doctrine\ORM\EntityManagerInterface;
-
 use Lebenlabs\SimpleCMS\Models\Categoria;
 use Lebenlabs\SimpleCMS\Repositories\CategoriaRepo;
-use Lebenlabs\SimpleCMS\Repositories\CategoriaRepository;
+use Pagerfanta\Pagerfanta;
 
 class CategoriasService
 {
@@ -21,7 +19,7 @@ class CategoriasService
         $this->categoriaRepo = $categoriaRepo;
     }
 
-    public function lists()
+    public function lists(): array
     {
         return $this->categoriaRepo->lists();
     }
@@ -37,15 +35,14 @@ class CategoriasService
 
     /**
      * @param $q
-     * @param int $perPage
      * @return \Pagerfanta\Pagerfanta
      */
-    public function buscar(?string $q)
+    public function buscar(?string $q): Pagerfanta
     {
         return $this->categoriaRepo->buscar($q);
     }
 
-    public function guardar(Categoria $categoria)
+    public function guardar(Categoria $categoria): int
     {
         if ($categoria->getId()) {
             return $this->categoriaRepo->update($categoria);
@@ -60,9 +57,9 @@ class CategoriasService
      * @param Categoria $categoria
      * @return type
      */
-    public function eliminar(Categoria $categoria)
+    public function eliminar(Categoria $categoria): int
     {
-        $this->categoriaRepo->delete($categoria);
+        return $this->categoriaRepo->delete($categoria);
     }
 
     /**
@@ -76,14 +73,14 @@ class CategoriasService
         return $this->categoriaRepo->findOneBySlug($slug);
     }
 
-    /**
-     * Retorna el listado de categorías con la cantidad de Publicaciones
-     * visibles asociadas a cada una de estas
-     *
-     * @return mixed
-     */
-    public function findCategoriaPublicacionesCount()
-    {
-        return $this->categoriaRepository->findCategoriaPublicacionesCount();
-    }
+//    /**
+//     * Retorna el listado de categorías con la cantidad de Publicaciones
+//     * visibles asociadas a cada una de estas
+//     *
+//     * @return mixed
+//     */
+//    public function findCategoriaPublicacionesCount()
+//    {
+//        return $this->categoriaRepository->findCategoriaPublicacionesCount();
+//    }
 }

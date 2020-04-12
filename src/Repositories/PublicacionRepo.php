@@ -3,10 +3,9 @@
 namespace Lebenlabs\SimpleCMS\Repositories;
 
 use Doctrine\DBAL\Connection;
-use Lebenlabs\SimpleCMS\Factories\PublicacionFactory;
+use Lebenlabs\SimpleCMS\Adapters\SimpleCmsAdapter;
+use Lebenlabs\SimpleCMS\Transformers\PublicacionTransformer;
 use Lebenlabs\SimpleCMS\Models\Publicacion;
-use Pagerfanta\Adapter\DoctrineDbalAdapter;
-use Pagerfanta\Adapter\DoctrineDbalSingleTableAdapter;
 use Pagerfanta\Pagerfanta;
 
 class PublicacionRepo
@@ -16,9 +15,15 @@ class PublicacionRepo
      */
     private $connection;
 
+    /**
+     * @var PublicacionTransformer
+     */
+    private $publicacionTransformer;
+
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
+        $this->publicacionTransformer = new PublicacionTransformer();
     }
 
     /**
@@ -30,9 +35,9 @@ class PublicacionRepo
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('Publicacion.*', 'Categoria.id as categoria_id', 'Categoria.nombre as categoria_nombre')
-            ->from('lebenlabs_simplecms_publicaciones', 'Publicacion')
+            ->from('simplecms_publicaciones', 'Publicacion')
             ->leftJoin('Publicacion', 'lebenlabs_simplecms_categorias', 'Categoria', 'Publicacion.categoria_id = Categoria.id')
-            ->orderBy('Publicacion.id', 'desc');
+            ->orderBy('Publicacion.fecha_publicacion', 'desc');
 
         if ($q) {
             $qb
@@ -54,14 +59,14 @@ class PublicacionRepo
                 ->setMaxResults(1);
         };
 
-        return new Pagerfanta(new DoctrineDbalAdapter($qb, $countQueryBuilderModifier));
+        return new Pagerfanta(new SimpleCmsAdapter($qb, $countQueryBuilderModifier, new PublicacionTransformer()));
     }
 
 
     public function insert(Publicacion $publicacion)
     {
         $qb = $this->connection->createQueryBuilder();
-        $qb->insert('lebenlabs_simplecms_publicaciones')
+        $qb->insert('simplecms_publicaciones')
             ->values(
                 [
                     'titulo' => ':titulo',
@@ -72,6 +77,9 @@ class PublicacionRepo
                     'destacada' => ':destacada',
                     'privada' => ':privada',
                     'publicada' => ':publicada',
+                    'protegida' => ':protegida',
+                    'notificable' => ':notificable',
+                    'notificada_at' => ':notificada_at',
                     'categoria_id' => ':categoria_id',
                     'created_at' => ':created_at',
                     'updated_at' => ':updated_at',
@@ -86,8 +94,11 @@ class PublicacionRepo
                 'destacada' => (int)$publicacion->isDestacada(),
                 'privada' => (int)$publicacion->isPrivada(),
                 'publicada' => (int)$publicacion->isPublicada(),
+                'protegida' => (int)$publicacion->isProtegida(),
+                'notificable' => (int)$publicacion->isNotificable(),
+                'notificada_at' => $publicacion->getNotificadaAt(),
                 'categoria_id' => $publicacion->getCategoria()->getId(),
-                'created_at' => $publicacion->getCreatedAt()->format('Y-m-d'),
+                'created_at' => $publicacion->getCreatedAt()->format('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
 
@@ -99,7 +110,7 @@ class PublicacionRepo
     {
         $qb = $this->connection->createQueryBuilder();
 
-        $qb->update('lebenlabs_simplecms_publicaciones')
+        $qb->update('simplecms_publicaciones')
             ->set('titulo', ':titulo')
             ->set('slug', ':slug')
             ->set('extracto', ':extracto')
@@ -108,6 +119,8 @@ class PublicacionRepo
             ->set('destacada', ':destacada')
             ->set('privada', ':privada')
             ->set('publicada', ':publicada')
+            ->set('notificable', ':notificable')
+            ->set('notificada_at', ':notificada_at')
             ->set('categoria_id', ':categoria_id')
             ->set('updated_at', ':updated_at')
             ->where('id = :id')
@@ -121,8 +134,9 @@ class PublicacionRepo
                 'destacada' => (int)$publicacion->isDestacada(),
                 'privada' => (int)$publicacion->isPrivada(),
                 'publicada' => (int)$publicacion->isPublicada(),
+                'notificable' => (int)$publicacion->isNotificable(),
+                'notificada_at' => $publicacion->getNotificadaAt() ? $publicacion->getNotificadaAt()->format('Y-m-d H:i:s') : null,
                 'categoria_id' => $publicacion->getCategoria()->getId(),
-                'created_at' => $publicacion->getCreatedAt()->format('Y-m-d'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
 
@@ -134,7 +148,7 @@ class PublicacionRepo
     {
         $qb = $this->connection->createQueryBuilder();
 
-        $qb->delete('lebenlabs_simplecms_publicaciones')
+        $qb->delete('simplecms_publicaciones')
             ->where('id = :id')
             ->setParameters([
                 'id' => $publicacion->getId(),
@@ -148,7 +162,7 @@ class PublicacionRepo
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('p.*', 'c.id as categoria_id', 'c.nombre as categoria_nombre')
-            ->from('lebenlabs_simplecms_publicaciones', 'p')
+            ->from('simplecms_publicaciones', 'p')
             ->leftJoin('p', 'lebenlabs_simplecms_categorias', 'c', 'p.categoria_id = c.id')
             ->where('p.id = :id')
             ->setParameter(':id', $id)->setMaxResults(1);
@@ -159,14 +173,14 @@ class PublicacionRepo
             return null;
         }
 
-        return PublicacionFactory::create($st->fetch());
+        return $this->publicacionTransformer->transform($st->fetch());
     }
 
     public function findOneBySlug(string $slug): ?Publicacion
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
-            ->from('lebenlabs_simplecms_publicaciones')
+            ->from('simplecms_publicaciones')
             ->where('slug = :slug')
             ->setParameter(':slug', $slug)->setMaxResults(1);
 
@@ -176,14 +190,33 @@ class PublicacionRepo
             return null;
         }
 
-        return PublicacionFactory::create($st->fetch());
+        return $this->publicacionTransformer->transform($st->fetch());
+    }
+
+
+    public function findPublicadasNotificablesPendientesByFechaPublicacion(\DateTimeImmutable $fechaPublicacion): iterable
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb->select('Publicacion.*', 'Categoria.id as categoria_id', 'Categoria.nombre as categoria_nombre')
+            ->from('simplecms_publicaciones', 'Publicacion')
+            ->leftJoin('Publicacion', 'lebenlabs_simplecms_categorias', 'Categoria', 'Publicacion.categoria_id = Categoria.id')
+            ->where('Publicacion.fecha_publicacion BETWEEN :fecha_publicacion_starts AND :fecha_publicacion_ends')
+            ->andWhere('Publicacion.publicada = 1')
+            ->andWhere('Publicacion.notificable = 1')
+            ->andWhere('Publicacion.notificada_at is NULL')
+            ->setParameter(':fecha_publicacion_starts', $fechaPublicacion->format('Y-m-d 00:00:00'))
+            ->setParameter(':fecha_publicacion_ends', $fechaPublicacion->format('Y-m-d 23:59:59'));
+
+        $st = $qb->execute();
+
+        return $this->publicacionTransformer->transformCollection($st->fetchAll());
     }
 
     public function buscarPublicadasByCategoriaSlug(string $slug): array
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('Publicacion.*', 'Categoria.id as categoria_id', 'Categoria.nombre as categoria_nombre')
-            ->from('lebenlabs_simplecms_publicaciones', 'Publicacion')
+            ->from('simplecms_publicaciones', 'Publicacion')
             ->leftJoin('Publicacion', 'lebenlabs_simplecms_categorias', 'Categoria', 'Publicacion.categoria_id = Categoria.id')
             ->where('Categoria.slug = :slug')
             ->andWhere('Publicacion.publicada = 1')
@@ -194,7 +227,8 @@ class PublicacionRepo
                 ->setMaxResults(1);
         };
 
-        return new Pagerfanta(new DoctrineDbalAdapter($qb, $countQueryBuilderModifier));
+        return new Pagerfanta(new SimpleCmsAdapter($qb, $countQueryBuilderModifier, new PublicacionTransformer()));
+
     }
 
 

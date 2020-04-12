@@ -1,13 +1,14 @@
 <?php
 
-namespace Lebenlabs\SimpleCMS\Factories;
+namespace Lebenlabs\SimpleCMS\Transformers;
 
+use Lebenlabs\SimpleCMS\Interfaces\Transformer;
 use Lebenlabs\SimpleCMS\Models\Categoria;
 use Lebenlabs\SimpleCMS\Models\Publicacion;
 
-class PublicacionFactory
+class PublicacionTransformer implements Transformer
 {
-    public static function create(array $row): Publicacion
+    public function transform(array $row): Publicacion
     {
         $publicacion = new Publicacion(
             $row['titulo'],
@@ -21,7 +22,12 @@ class PublicacionFactory
             ->setPrivada((bool)$row['privada'])
             ->setPublicada((bool)$row['publicada'])
             ->setProtegida((bool)$row['protegida'])
+            ->setNotificable((bool)$row['notificable'])
             ->setCategoria((new Categoria($row['categoria_nombre']))->setId($row['categoria_id']));
+
+        if ($row['notificada_at']) {
+            $publicacion->setNotificadaAt(\DateTime::createFromFormat('Y-m-d H:i:s', $row['notificada_at']));
+        }
 
         return $publicacion
             ->setId($row['id'])
@@ -30,11 +36,11 @@ class PublicacionFactory
 
     }
 
-    public static function transform(array $rows): array
+    public function transformCollection(iterable $rows): iterable
     {
         $publicaciones = [];
         foreach ($rows as $row) {
-            $publicaciones[] = self::create($row);
+            $publicaciones[] = self::transform($row);
         }
 
         return $publicaciones;

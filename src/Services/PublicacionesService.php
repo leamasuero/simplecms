@@ -2,10 +2,8 @@
 
 namespace Lebenlabs\SimpleCMS\Services;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Lebenlabs\SimpleCMS\Models\Publicacion;
 use Lebenlabs\SimpleCMS\Repositories\PublicacionRepo;
-use Lebenlabs\SimpleCMS\Repositories\PublicacionRepository;
 use Lebenlabs\SimpleStorage\Services\SimpleStorageService;
 
 class PublicacionesService
@@ -27,32 +25,37 @@ class PublicacionesService
         $this->simpleStorageService = $simpletStorageService;
     }
 
-    public function buscarPublicadas(?string $q)
+    public function buscarPublicadas(?string $q = null): iterable
     {
         return $this->publicacionRepo->buscar($q, ['publicada' => 1]);
     }
 
-    public function buscar(?string $q, array $criteria = [])
+    public function buscar(?string $q = null, array $criteria = []): iterable
     {
         return $this->publicacionRepo->buscar($q, $criteria);
     }
 
-    public function buscarPrivadas(?string $q)
+    public function buscarPrivadas(?string $q = null): iterable
     {
         return $this->publicacionRepo->buscar($q, ['privada' => 1]);
     }
 
-    public function buscarDestacadas(?string $q, array $criteria = ['destacada' => 1, 'privada' => 0, 'publicada' => 1]): array
+    public function buscarPrivadasPublicadas(?string $q = null): iterable
+    {
+        return $this->publicacionRepo->buscar($q, ['privada' => 1, 'publicada' => 1]);
+    }
+
+    public function buscarDestacadas(?string $q = null, array $criteria = ['destacada' => 1, 'privada' => 0, 'publicada' => 1]): iterable
     {
         return $this->publicacionRepo->buscar($q, $criteria);
     }
 
-    public function find($id): ?Publicacion
+    public function find(int $id): ?Publicacion
     {
         return $this->publicacionRepo->find($id);
     }
 
-    public function guardar(Publicacion $publicacion)
+    public function guardar(Publicacion $publicacion): int
     {
         if ($publicacion->getId()) {
             return $this->publicacionRepo->update($publicacion);
@@ -67,7 +70,7 @@ class PublicacionesService
      * @param Publicacion $publicacion
      * @return type
      */
-    public function eliminar(Publicacion $publicacion)
+    public function eliminar(Publicacion $publicacion): int
     {
 //        // Obtenemos la imagen asociada a la publicacion
 //        $imagen = $publicacion->getImagen();
@@ -86,19 +89,18 @@ class PublicacionesService
         return $this->publicacionRepo->delete($publicacion);
     }
 
-    /**
-     * Retorna la publicación con el Slug pasado como parametro
-     *
-     * @param string $slug
-     * @return Publicacion
-     */
-    public function findPublicacionBySlug(string $slug): ?Publicacion
+    public function findBySlug(string $slug): ?Publicacion
     {
         return $this->publicacionRepo->findOneBySlug($slug);
     }
 
-    public function buscarPublicadasByCategoriaSlug($slug)
+    public function buscarPublicadasByCategoriaSlug(string $slug): iterable
     {
         return $this->publicacionRepo->buscarPublicadasByCategoriaSlug($slug);
+    }
+
+    public function findPublicadasNotificablesPendientesByFechaPublicacion(\DateTimeImmutable $fechaPublicacion): iterable
+    {
+        return $this->publicacionRepo->findPublicadasNotificablesPendientesByFechaPublicacion($fechaPublicacion);
     }
 }

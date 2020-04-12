@@ -50,7 +50,7 @@
     <div class="form-group row ">
         <label class="col-md-2 control-label text-right" for="destacada">Destacada</label>
         <div class="input-group col-md-9">
-            {!! checkbox('destacada', '1', old('destacada', $publicacion->isDestacada()), ['id' => 'destacada', 'class' => 'clase']) !!}
+            {!! checkbox('destacada', '1', old('destacada', $publicacion->isDestacada()), ['id' => 'destacada']) !!}
         </div>
     </div>
 
@@ -61,12 +61,31 @@
         </div>
     </div>
 
-    <div class="form-group row ">
+    <div class="form-group row">
         <label class="col-md-2 control-label text-right" for="publicada">Publicada</label>
         <div class="input-group col-md-9">
             {!! checkbox('publicada', '1', old('publicada', $publicacion->isPublicada()), ['id' => 'publicada']) !!}
         </div>
     </div>
+
+    <div class="form-group row">
+        <label class="col-md-2 control-label text-right" for="notificable">
+            Notificable
+        </label>
+
+        <div class="input-group col-md-9">
+            {!! checkbox('notificable', '1', old('notificable', $publicacion->isNotificable()), ['id' => 'notificable']) !!}
+            <div class="ml-3">
+                <small class="form-text text-muted">
+                    De ser notificable, la publicación será notificada a los profesionales vía mail pasado
+                    los {{ config('simplecms.publicaciones.notificaciones.waiting') }} minutos de su creación (siempre y cuando la fecha de publicacion sea la del dia vigente).
+                </small>
+            </div>
+        </div>
+
+
+    </div>
+
 
     <div class="{{ $errors->has('cuerpo') ? 'has-error':'' }}">
         <div>

@@ -36,12 +36,12 @@
                         <div class="form-group row">
                             <label class="col-md-2 control-label text-right"
                                    for="atributos[exclusivo]">Exclusivo(s)?</label>
-                            <div class="input-group col-md-6">
+                            <div class="input-group col-md-9">
                                 {!!  checkbox('atributos[exclusivo]', 1, old('atributos[exclusivo]'), ['id' => 'atributos[exclusivo]']) !!}
-                                <div>
-                                    <small>
+                                <div class="ml-2">
+                                    <small class="form-text text-muted">
                                         Los archivos exclusivos requieren que el usuario este autenticado para
-                                        poder ser descargados.
+                                        poder ser descargados (sólo aplicable a publicaciones públicas).
                                     </small>
                                 </div>
                             </div>
@@ -66,7 +66,7 @@
 
     @if(count($archivos))
 
-        <div class="row">
+        <div class="row mt-3">
             <div class="col-md-12">
 
                 <div class="panel panel-primary card">

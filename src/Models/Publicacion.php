@@ -56,6 +56,14 @@ class Publicacion implements Shareable, Storable
      */
     private $privada;
 
+    /**
+     * @var boolean
+     */
+    private $notificable;
+    /**
+     * @var \DateTime
+     */
+    private $notificadaAt;
 
     /**
      * @var Categoria
@@ -83,10 +91,14 @@ class Publicacion implements Shareable, Storable
         $this->setSlug($titulo);
         $this->extracto = $extracto;
         $this->cuerpo = $cuerpo;
+
         $this->publicada = false;
         $this->destacada = false;
-        $this->protegida = false;
         $this->privada = false;
+        $this->protegida = false;
+        $this->notificable = false;
+        $this->notificadaAt = null;
+
         $this->createdAt = new \DateTime;
         $this->updatedAt = new \DateTime;
     }
@@ -132,6 +144,47 @@ class Publicacion implements Shareable, Storable
         return $this->publicada;
     }
 
+    /**
+     * @return bool
+     */
+    public function isNotificable(): bool
+    {
+        return $this->notificable;
+    }
+
+    /**
+     * @param bool $notificable
+     * @return Publicacion
+     */
+    public function setNotificable(bool $notificable): Publicacion
+    {
+        $this->notificable = $notificable;
+        return $this;
+    }
+
+    public function isNotificada(): bool
+    {
+        return $this->notificadaAt instanceof DateTime;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getNotificadaAt(): ?DateTime
+    {
+        return $this->notificadaAt;
+    }
+
+    /**
+     * @param DateTime $notificadaAt
+     * @return Publicacion
+     */
+    public function setNotificadaAt(DateTime $notificadaAt): Publicacion
+    {
+        $this->notificadaAt = $notificadaAt;
+        return $this;
+    }
+
     public function getDestacada()
     {
         return $this->destacada;
@@ -154,12 +207,12 @@ class Publicacion implements Shareable, Storable
 
     public function getCreatedAt(): DateTime
     {
-        return $this->createdAt;
+        return clone $this->createdAt;
     }
 
     public function getUpdatedAt(): DateTime
     {
-        return $this->updatedAt;
+        return clone $this->updatedAt;
     }
 
     /**
@@ -189,6 +242,7 @@ class Publicacion implements Shareable, Storable
         $this->id = $id;
         return $this;
     }
+
 
     public function setTitulo($titulo)
     {
@@ -224,17 +278,6 @@ class Publicacion implements Shareable, Storable
     public function setCategoria(Categoria $categoria = null)
     {
         $this->categoria = $categoria;
-        return $this;
-    }
-
-    public function getImagen()
-    {
-        return $this->imagen;
-    }
-
-    public function setImagen(Imagen $imagen)
-    {
-        $this->imagen = $imagen;
         return $this;
     }
 

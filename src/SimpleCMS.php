@@ -146,6 +146,11 @@ class SimpleCMS
         return $this->publicacionesService;
     }
 
+    public function getStorageService(): SimpleStorageService
+    {
+        return $this->simpleStorageService;
+    }
+
     public function getService(string $entidad)
     {
         switch ($entidad) {

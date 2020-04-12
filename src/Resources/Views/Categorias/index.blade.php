@@ -24,8 +24,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($categorias as $row)
-                        @php($categoria = \Lebenlabs\SimpleCMS\Factories\CategoriaFactory::create($row))
+                    @foreach($categorias as $categoria)
                         <tr>
                             <th scope="row">
                                 {{ $categoria->getId() }}

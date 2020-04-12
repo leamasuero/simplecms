@@ -111,9 +111,10 @@ class PublicacionesController extends Controller
             ->setExtracto($request->get('extracto'))
             ->setCuerpo($request->get('cuerpo'))
             ->setFechaPublicacion(\DateTime::createFromFormat('Y-m-d', $request->get('fecha_publicacion')))
-            ->setDestacada((bool)$request->get('destacada', false))
-            ->setPrivada((bool)$request->get('privada', false))
-            ->setPublicada((bool)$request->get('publicada', false))
+            ->setDestacada((bool)$request->get('destacada'))
+            ->setPrivada((bool)$request->get('privada'))
+            ->setPublicada((bool)$request->get('publicada'))
+            ->setNotificable((bool)$request->get('notificable'))
             ->setCategoria($categoria);
 
         try {
@@ -161,6 +162,7 @@ class PublicacionesController extends Controller
             ->setDestacada((bool)$request->get('destacada'))
             ->setPrivada((bool)$request->get('privada'))
             ->setPublicada((bool)$request->get('publicada'))
+            ->setNotificable((bool)$request->get('notificable'))
             ->setCategoria($categoria);
 
         try {

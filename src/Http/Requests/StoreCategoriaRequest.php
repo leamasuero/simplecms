@@ -26,7 +26,7 @@ class StoreCategoriaRequest extends FormRequest
     public function rules()
     {
         return [
-            'nombre' => 'required|unique:' . Categoria::class . ',nombre'
+            'nombre' => 'required'
         ];
     }
 }

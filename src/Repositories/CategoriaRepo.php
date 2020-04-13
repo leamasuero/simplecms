@@ -36,7 +36,7 @@ class CategoriaRepo
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
-            ->from('simplecms_categorias', 'Categoria')
+            ->from(Categoria::$tabla, 'Categoria')
             ->orderBy('Categoria.id', 'desc');
 
         if ($q) {
@@ -56,7 +56,7 @@ class CategoriaRepo
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
-            ->from('simplecms_categorias')
+            ->from(Categoria::$tabla)
             ->where('id = :id')
             ->setParameter(':id', $id)->setMaxResults(1);
 
@@ -73,7 +73,7 @@ class CategoriaRepo
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('id, nombre')
-            ->from('simplecms_categorias');
+            ->from(Categoria::$tabla);
 
         $st = $qb->execute();
 
@@ -83,7 +83,7 @@ class CategoriaRepo
     public function insert(Categoria $categoria)
     {
         $qb = $this->connection->createQueryBuilder();
-        $qb->insert('simplecms_categorias')
+        $qb->insert(Categoria::$tabla)
             ->values(
                 [
                     'nombre' => ':nombre',
@@ -112,7 +112,7 @@ class CategoriaRepo
     {
         $qb = $this->connection->createQueryBuilder();
 
-        $qb->update('simplecms_categorias')
+        $qb->update(Categoria::$tabla)
             ->set('nombre', ':nombre')
             ->set('slug', ':slug')
             ->set('destacada', ':destacada')
@@ -135,7 +135,7 @@ class CategoriaRepo
     {
         $qb = $this->connection->createQueryBuilder();
 
-        $qb->delete('simplecms_categorias')
+        $qb->delete(Categoria::$tabla)
             ->where('id = :id')
             ->setParameters([
                 'id' => $categoria->getId(),
@@ -148,7 +148,7 @@ class CategoriaRepo
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
-            ->from('simplecms_categorias')
+            ->from(Categoria::$tabla)
             ->where('slug = :slug')
             ->setParameter(':slug', $slug)
             ->setMaxResults(1);

@@ -6,6 +6,7 @@ use Doctrine\DBAL\Connection;
 use Lebenlabs\SimpleCMS\Adapters\SimpleCmsAdapter;
 use Lebenlabs\SimpleCMS\Transformers\PublicacionTransformer;
 use Lebenlabs\SimpleCMS\Models\Publicacion;
+use Lebenlabs\SimpleCMS\Models\Categoria;
 use Pagerfanta\Pagerfanta;
 
 class PublicacionRepo
@@ -35,8 +36,8 @@ class PublicacionRepo
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('Publicacion.*', 'Categoria.id as categoria_id', 'Categoria.nombre as categoria_nombre')
-            ->from('simplecms_publicaciones', 'Publicacion')
-            ->leftJoin('Publicacion', 'simplecms_categorias', 'Categoria', 'Publicacion.categoria_id = Categoria.id')
+            ->from(Publicacion::$tabla, 'Publicacion')
+            ->leftJoin('Publicacion', Categoria::$tabla, 'Categoria', 'Publicacion.categoria_id = Categoria.id')
             ->orderBy('Publicacion.fecha_publicacion', 'desc');
 
         if ($q) {
@@ -66,7 +67,7 @@ class PublicacionRepo
     public function insert(Publicacion $publicacion)
     {
         $qb = $this->connection->createQueryBuilder();
-        $qb->insert('simplecms_publicaciones')
+        $qb->insert(Publicacion::$tabla)
             ->values(
                 [
                     'titulo' => ':titulo',
@@ -110,7 +111,7 @@ class PublicacionRepo
     {
         $qb = $this->connection->createQueryBuilder();
 
-        $qb->update('simplecms_publicaciones')
+        $qb->update(Publicacion::$tabla)
             ->set('titulo', ':titulo')
             ->set('slug', ':slug')
             ->set('extracto', ':extracto')
@@ -148,7 +149,7 @@ class PublicacionRepo
     {
         $qb = $this->connection->createQueryBuilder();
 
-        $qb->delete('simplecms_publicaciones')
+        $qb->delete(Publicacion::$tabla)
             ->where('id = :id')
             ->setParameters([
                 'id' => $publicacion->getId(),
@@ -162,8 +163,8 @@ class PublicacionRepo
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('p.*', 'c.id as categoria_id', 'c.nombre as categoria_nombre')
-            ->from('simplecms_publicaciones', 'p')
-            ->leftJoin('p', 'simplecms_categorias', 'c', 'p.categoria_id = c.id')
+            ->from(Publicacion::$tabla, 'p')
+            ->leftJoin('p', Categoria::$tabla, 'c', 'p.categoria_id = c.id')
             ->where('p.id = :id')
             ->setParameter(':id', $id)->setMaxResults(1);
 
@@ -180,7 +181,7 @@ class PublicacionRepo
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('*')
-            ->from('simplecms_publicaciones')
+            ->from(Publicacion::$tabla)
             ->where('slug = :slug')
             ->setParameter(':slug', $slug)->setMaxResults(1);
 
@@ -198,8 +199,8 @@ class PublicacionRepo
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('Publicacion.*', 'Categoria.id as categoria_id', 'Categoria.nombre as categoria_nombre')
-            ->from('simplecms_publicaciones', 'Publicacion')
-            ->leftJoin('Publicacion', 'simplecms_categorias', 'Categoria', 'Publicacion.categoria_id = Categoria.id')
+            ->from(Publicacion::$tabla, 'Publicacion')
+            ->leftJoin('Publicacion', Categoria::$tabla, 'Categoria', 'Publicacion.categoria_id = Categoria.id')
             ->where('Publicacion.fecha_publicacion BETWEEN :fecha_publicacion_starts AND :fecha_publicacion_ends')
             ->andWhere('Publicacion.publicada = 1')
             ->andWhere('Publicacion.notificable = 1')
@@ -216,8 +217,8 @@ class PublicacionRepo
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('Publicacion.*', 'Categoria.id as categoria_id', 'Categoria.nombre as categoria_nombre')
-            ->from('simplecms_publicaciones', 'Publicacion')
-            ->leftJoin('Publicacion', 'simplecms_categorias', 'Categoria', 'Publicacion.categoria_id = Categoria.id')
+            ->from(Publicacion::$tabla, 'Publicacion')
+            ->leftJoin('Publicacion', Categoria::$tabla, 'Categoria', 'Publicacion.categoria_id = Categoria.id')
             ->where('Categoria.slug = :slug')
             ->andWhere('Publicacion.publicada = 1')
             ->setParameter(':slug', $slug);

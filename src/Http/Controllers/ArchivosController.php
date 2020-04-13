@@ -5,6 +5,7 @@ namespace Lebenlabs\SimpleCMS\Http\Controllers;
 use Doctrine\ORM\EntityManager;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Lebenlabs\SimpleCMS\Http\Middleware\CanManagePublicaciones;
 use Lebenlabs\SimpleCMS\Http\Requests\StoreArchivosRequest;
 use Lebenlabs\SimpleCMS\SimpleCMS;
@@ -101,6 +102,20 @@ class ArchivosController extends Controller
         }
 
         return redirect()->back();
+    }
+
+    public function show(int $id)
+    {
+        $storageItem = $this->storageService->find($id);
+
+        return response()->make(
+            $storageItem->getArchivo(),
+            Response::HTTP_OK,
+            [
+                'Content-Type' => $this->storageService->mimeType($storageItem),
+                'Content-Disposition' => "attachment;filename={$storageItem->getOriginalFilename()}"
+            ]
+        );
     }
 
 }

@@ -44,4 +44,11 @@ Route::group(['prefix' => 'simplecms', 'as' => 'simplecms.'], function () {
 
 });
 
+// El prefijo esta para evitar problemas en CBSF y permitir funcionar ambos SimpleCMS
+Route::group(['prefix' => 'simplecms', 'as' => 'simplecms.'], function () {
+
+    Route::get('archivos/{id}', [ArchivosController::class, 'show'])->name('archivos.show');
+
+});
+
 

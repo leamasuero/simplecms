@@ -11,6 +11,8 @@ use Lebenlabs\SimpleStorage\Interfaces\Storable;
 class Publicacion implements Shareable, Storable
 {
 
+    public static $tabla = 'simplecms_publicaciones';
+
     /**
      * @var int
      */

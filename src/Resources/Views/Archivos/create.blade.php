@@ -68,7 +68,7 @@
                                         <span class="fa fa-trash"></span>
                                     </button>
                                     <span class="fa fa-file-pdf"></span>
-                                    <a href="{{ route('simplecms.public.archivos.show', $archivo->getId()) }} ">{{ $archivo }}</a>
+                                    <a href="{{ route('simplecms.archivos.show', $archivo->getId()) }} ">{{ $archivo }}</a>
                                     <div class="clearfix"></div>
                                 </form>
                             </div>

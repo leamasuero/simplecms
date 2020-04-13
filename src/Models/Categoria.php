@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 class Categoria
 {
 
+    public static $tabla = 'simplecms_categorias';
+
     /**
      * @var int
      */

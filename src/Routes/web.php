@@ -18,7 +18,6 @@ use Lebenlabs\SimpleCMS\Http\Controllers\PublicacionesController;
 
 Route::group(['prefix' => 'simplecms', 'as' => 'simplecms.'], function () {
 
-    // Publicaciones
     Route::resource(
         'publicaciones',
         PublicacionesController::class,
@@ -27,7 +26,6 @@ Route::group(['prefix' => 'simplecms', 'as' => 'simplecms.'], function () {
         ]
     );
 
-    // Categorias
     Route::resource(
         'categorias',
         CategoriasController::class,
@@ -36,7 +34,6 @@ Route::group(['prefix' => 'simplecms', 'as' => 'simplecms.'], function () {
         ]
     );
 
-    // Archivos
     Route::resource(
         'archivos',
         ArchivosController::class,
@@ -44,15 +41,6 @@ Route::group(['prefix' => 'simplecms', 'as' => 'simplecms.'], function () {
             'only' => ['create', 'store', 'destroy']
         ]
     );
-
-    Route::put('archivos/{id}/exclusivo', [ArchivosController::class, 'updateExclusivo'])->name('archivos.updateExclusivo');
-
-});
-
-// El prefijo esta para evitar problemas en CBSF y permitir funcionar ambos SimpleCMS
-Route::group(['prefix' => 'simplecms/public', 'as' => 'simplecms.public.'], function () {
-
-    Route::get('archivos/{id}/exclusivo', [ArchivosController::class, 'show'])->name('archivos.show');
 
 });
 

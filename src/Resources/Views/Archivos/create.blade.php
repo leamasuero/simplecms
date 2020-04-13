@@ -34,20 +34,6 @@
                         </div>
 
                         <div class="form-group row">
-                            <label class="col-md-2 control-label text-right"
-                                   for="atributos[exclusivo]">Exclusivo(s)?</label>
-                            <div class="input-group col-md-9">
-                                {!!  checkbox('atributos[exclusivo]', 1, old('atributos[exclusivo]'), ['id' => 'atributos[exclusivo]']) !!}
-                                <div class="ml-2">
-                                    <small class="form-text text-muted">
-                                        Los archivos exclusivos requieren que el usuario este autenticado para
-                                        poder ser descargados (sólo aplicable a publicaciones públicas).
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
                             <label class="col-md-2 control-label"></label>
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">

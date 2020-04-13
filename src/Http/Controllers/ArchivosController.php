@@ -5,8 +5,6 @@ namespace Lebenlabs\SimpleCMS\Http\Controllers;
 use Doctrine\ORM\EntityManager;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Lebenlabs\SimpleCMS\Http\Middleware\CanManagePublicaciones;
 use Lebenlabs\SimpleCMS\Http\Requests\StoreArchivosRequest;
 use Lebenlabs\SimpleCMS\SimpleCMS;
@@ -74,9 +72,8 @@ class ArchivosController extends Controller
 
         try {
 
-            $atributos = $request->get('atributos', []);
             foreach ($request->file('archivos') as $archivo) {
-                $this->storageService->put($entidad, $archivo, $atributos);
+                $this->storageService->put($entidad, $archivo);
             }
 
             flash(trans('Lebenlabs/SimpleCMS::archivos.store_success'))->success();
@@ -106,50 +103,4 @@ class ArchivosController extends Controller
         return redirect()->back();
     }
 
-    /**
-     * @param $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function updateExclusivo($id, Request $request)
-    {
-        try {
-
-            $atributos = [
-                'exclusivo' => (bool)$request->get('exclusivo', 0)
-            ];
-
-            $this->storageService->setAtributos($id, $atributos);
-
-            flash(trans('Lebenlabs/SimpleCMS::archivos.exclusivo_success'))->success();
-        } catch (Exception $e) {
-            flash($e->getMessage())->error();
-        }
-
-        return redirect()->back();
-    }
-
-    /**
-     * @param $id
-     * @return \Illuminate\Http\Response
-     * @throws \Lebenlabs\SimpleStorage\Exceptions\NotFoundException
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
-     */
-    public function show(int $id)
-    {
-        $storageItem = $this->storageService->find($id);
-
-//        if ($storageItem->getAtributos()->getExclusivo() && !Auth::check()) {
-//            flash(trans('Lebenlabs/SimpleCMS::archivos.exclusivo'))->error();
-//            return redirect()->route(config('simplecms.routes.login'));
-//        }
-
-        return response()->make(
-            $storageItem->getArchivo(),
-            Response::HTTP_OK,
-            [
-                'Content-Type' => $this->storageService->mimeType($storageItem),
-                'Content-Disposition' => "attachment;filename={$storageItem->getOriginalFilename()}"
-            ]
-        );
-    }
 }

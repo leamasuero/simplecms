@@ -74,13 +74,24 @@
         </label>
 
         <div class="input-group col-md-9">
-            {!! checkbox('notificable', '1', old('notificable', $publicacion->isNotificable()), ['id' => 'notificable']) !!}
-            <div class="ml-3">
-                <small class="form-text text-muted">
-                    De ser notificable, la publicación será notificada a los profesionales vía mail pasado
-                    los {{ config('simplecms.publicaciones.notificaciones.waiting') }} minutos de su creación (siempre y cuando la fecha de publicacion sea la del dia vigente).
-                </small>
-            </div>
+            @if($publicacion->isNotificada())
+                <input type="hidden" name="notificable" value="1"/>
+                <input type="checkbox" checked disabled />
+                <div class="ml-3">
+                    <small class="form-text text-muted">
+                        Publicacion notificada el {{ $publicacion->getNotificadaAt()->format('d/m/Y H:i') }}
+                    </small>
+                </div>
+            @else
+                {!! checkbox('notificable', '1', old('notificable', $publicacion->isNotificable()), ['id' => 'notificable']) !!}
+                <div class="ml-3">
+                    <small class="form-text text-muted">
+                        De ser notificable, la publicación será notificada a los profesionales vía mail pasado
+                        los {{ config('simplecms.publicaciones.notificaciones.waiting') }} minutos de su creación
+                        (siempre y cuando la fecha de publicacion sea la del dia vigente).
+                    </small>
+                </div>
+            @endif
         </div>
 
 

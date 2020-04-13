@@ -36,7 +36,7 @@ class PublicacionRepo
         $qb = $this->connection->createQueryBuilder();
         $qb->select('Publicacion.*', 'Categoria.id as categoria_id', 'Categoria.nombre as categoria_nombre')
             ->from('simplecms_publicaciones', 'Publicacion')
-            ->leftJoin('Publicacion', 'lebenlabs_simplecms_categorias', 'Categoria', 'Publicacion.categoria_id = Categoria.id')
+            ->leftJoin('Publicacion', 'simplecms_categorias', 'Categoria', 'Publicacion.categoria_id = Categoria.id')
             ->orderBy('Publicacion.fecha_publicacion', 'desc');
 
         if ($q) {
@@ -163,7 +163,7 @@ class PublicacionRepo
         $qb = $this->connection->createQueryBuilder();
         $qb->select('p.*', 'c.id as categoria_id', 'c.nombre as categoria_nombre')
             ->from('simplecms_publicaciones', 'p')
-            ->leftJoin('p', 'lebenlabs_simplecms_categorias', 'c', 'p.categoria_id = c.id')
+            ->leftJoin('p', 'simplecms_categorias', 'c', 'p.categoria_id = c.id')
             ->where('p.id = :id')
             ->setParameter(':id', $id)->setMaxResults(1);
 
@@ -199,7 +199,7 @@ class PublicacionRepo
         $qb = $this->connection->createQueryBuilder();
         $qb->select('Publicacion.*', 'Categoria.id as categoria_id', 'Categoria.nombre as categoria_nombre')
             ->from('simplecms_publicaciones', 'Publicacion')
-            ->leftJoin('Publicacion', 'lebenlabs_simplecms_categorias', 'Categoria', 'Publicacion.categoria_id = Categoria.id')
+            ->leftJoin('Publicacion', 'simplecms_categorias', 'Categoria', 'Publicacion.categoria_id = Categoria.id')
             ->where('Publicacion.fecha_publicacion BETWEEN :fecha_publicacion_starts AND :fecha_publicacion_ends')
             ->andWhere('Publicacion.publicada = 1')
             ->andWhere('Publicacion.notificable = 1')
@@ -217,7 +217,7 @@ class PublicacionRepo
         $qb = $this->connection->createQueryBuilder();
         $qb->select('Publicacion.*', 'Categoria.id as categoria_id', 'Categoria.nombre as categoria_nombre')
             ->from('simplecms_publicaciones', 'Publicacion')
-            ->leftJoin('Publicacion', 'lebenlabs_simplecms_categorias', 'Categoria', 'Publicacion.categoria_id = Categoria.id')
+            ->leftJoin('Publicacion', 'simplecms_categorias', 'Categoria', 'Publicacion.categoria_id = Categoria.id')
             ->where('Categoria.slug = :slug')
             ->andWhere('Publicacion.publicada = 1')
             ->setParameter(':slug', $slug);

@@ -1,4 +1,5 @@
 <?php
+
 namespace Lebenlabs\SimpleCMS\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -26,7 +27,7 @@ class UpdateCategoriaRequest extends FormRequest
     public function rules()
     {
         return [
-            'nombre' => 'required|unique:' . Categoria::class . ',nombre,' . $this->get('id')
+            'nombre' => 'required'
         ];
     }
 }

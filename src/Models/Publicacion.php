@@ -105,45 +105,45 @@ class Publicacion implements Shareable, Storable
         $this->updatedAt = new \DateTime;
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getTitulo()
+    public function getTitulo(): ?string
     {
         return $this->titulo;
     }
 
-    private function setSlug($titulo)
+    private function setSlug($titulo): Publicacion
     {
         $this->slug = Str::slug($titulo);
         return $this;
     }
 
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
 
-    public function getExtracto()
+    public function getExtracto(): ?string
     {
         return $this->extracto;
     }
 
-    public function getCuerpo()
+    public function getCuerpo(): ?string
     {
         return $this->cuerpo;
     }
 
-    public function getPublicada()
+    public function getPublicada(): bool
     {
         return $this->publicada;
     }
 
-    public function isPublicada()
+    public function isPublicada(): bool
     {
-        return $this->publicada;
+        return (bool)$this->publicada;
     }
 
     /**
@@ -151,7 +151,7 @@ class Publicacion implements Shareable, Storable
      */
     public function isNotificable(): bool
     {
-        return $this->notificable;
+        return (bool)$this->notificable;
     }
 
     /**
@@ -169,18 +169,11 @@ class Publicacion implements Shareable, Storable
         return $this->notificadaAt instanceof DateTime;
     }
 
-    /**
-     * @return DateTime
-     */
     public function getNotificadaAt(): ?DateTime
     {
         return $this->notificadaAt;
     }
 
-    /**
-     * @param DateTime $notificadaAt
-     * @return Publicacion
-     */
     public function setNotificadaAt(DateTime $notificadaAt): Publicacion
     {
         $this->notificadaAt = $notificadaAt;
@@ -189,12 +182,12 @@ class Publicacion implements Shareable, Storable
 
     public function getDestacada()
     {
-        return $this->destacada;
+        return (bool)$this->destacada;
     }
 
-    public function isDestacada()
+    public function isDestacada(): bool
     {
-        return $this->destacada;
+        return (bool)$this->destacada;
     }
 
     public function getCategoria()
@@ -217,21 +210,11 @@ class Publicacion implements Shareable, Storable
         return clone $this->updatedAt;
     }
 
-    /**
-     * Chequea si la publicacion es privada
-     *
-     * @return bool
-     */
     public function isPrivada(): bool
     {
-        return $this->privada;
+        return (bool)$this->privada;
     }
 
-    /**
-     * Set de la publicacion es privada
-     *
-     * @param bool $privada
-     */
     public function setPrivada(bool $privada): Publicacion
     {
         $this->privada = $privada;
@@ -239,63 +222,63 @@ class Publicacion implements Shareable, Storable
     }
 
 
-    public function setId($id)
+    public function setId($id): Publicacion
     {
         $this->id = $id;
         return $this;
     }
 
 
-    public function setTitulo($titulo)
+    public function setTitulo(string $titulo): Publicacion
     {
         $this->titulo = $titulo;
         $this->setSlug($titulo);
         return $this;
     }
 
-    public function setExtracto($extracto)
+    public function setExtracto(string $extracto): Publicacion
     {
         $this->extracto = $extracto;
         return $this;
     }
 
-    public function setCuerpo($cuerpo)
+    public function setCuerpo(string $cuerpo): Publicacion
     {
         $this->cuerpo = $cuerpo;
         return $this;
     }
 
-    public function setPublicada($publicada)
+    public function setPublicada(bool $publicada): Publicacion
     {
         $this->publicada = $publicada;
         return $this;
     }
 
-    public function setDestacada($destacado)
+    public function setDestacada(bool $destacado): Publicacion
     {
         $this->destacada = $destacado;
         return $this;
     }
 
-    public function setCategoria(Categoria $categoria = null)
+    public function setCategoria(Categoria $categoria = null): Publicacion
     {
         $this->categoria = $categoria;
         return $this;
     }
 
-    public function setFechaPublicacion(DateTime $fechaPublicacion)
+    public function setFechaPublicacion(DateTime $fechaPublicacion): Publicacion
     {
         $this->fechaPublicacion = $fechaPublicacion;
         return $this;
     }
 
-    public function setCreatedAt(DateTime $createdAt)
+    public function setCreatedAt(DateTime $createdAt): Publicacion
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function setUpdatedAt(DateTime $updatedAt)
+    public function setUpdatedAt(DateTime $updatedAt): Publicacion
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -311,12 +294,12 @@ class Publicacion implements Shareable, Storable
      *
      * @return boolean
      */
-    public function isProtegida()
+    public function isProtegida(): bool
     {
-        return $this->protegida;
+        return (bool)$this->protegida;
     }
 
-    function setProtegida($protegida)
+    function setProtegida(bool $protegida): Publicacion
     {
         $this->protegida = $protegida;
         return $this;

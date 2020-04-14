@@ -41,11 +41,6 @@ class Categoria
     private $slug;
 
     /**
-     * @var array
-     */
-    private $publicaciones;
-
-    /**
      * @var DateTime
      * */
     private $createdAt;
@@ -55,104 +50,98 @@ class Categoria
      * */
     private $updatedAt;
 
-    public function __construct(string $nombre = null, bool $publicada = false, bool $destacada = false, bool $protegida = false)
+    public function __construct(string $nombre = null, bool $publicada = true, bool $destacada = false, bool $protegida = false)
     {
         $this->nombre = $nombre;
         $this->setSlug($nombre);
-        $this->publicada = true;
-        $this->destacada = false;
-        $this->protegida = false;
+        $this->publicada = $publicada;
+        $this->destacada = $destacada;
+        $this->protegida = $protegida;
+
         $this->createdAt = new DateTime;
         $this->updatedAt = new DateTime;
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNombre()
+    public function getNombre(): ?string
     {
         return $this->nombre;
     }
 
-    public function getDestacada()
+    public function getDestacada(): bool
     {
-        return $this->destacada;
+        return (bool)$this->destacada;
     }
 
-    public function getPublicada()
+    public function getPublicada(): bool
     {
-        return $this->publicada;
+        return (bool)$this->publicada;
     }
 
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
 
-    public function getCreatedAt()
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt()
+    public function getUpdatedAt(): DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setId($id)
+    public function setId(int $id): Categoria
     {
         $this->id = $id;
         return $this;
     }
 
-    public function setNombre($nombre)
+    public function setNombre($nombre): Categoria
     {
         $this->nombre = $nombre;
         $this->setSlug($nombre);
         return $this;
     }
 
-    public function setDestacada($destacada)
+    public function setDestacada(bool $destacada): Categoria
     {
         $this->destacada = $destacada;
         return $this;
     }
 
-    public function setPublicada($publicada)
+    public function setPublicada(bool $publicada): Categoria
     {
         $this->publicada = $publicada;
         return $this;
     }
 
-    private function setSlug($nombre)
+    private function setSlug(string $nombre): Categoria
     {
         $this->slug = Str::slug($nombre);
         return $this;
     }
 
-    public function setCreatedAt(DateTime $createdAt)
+    public function setCreatedAt(DateTime $createdAt): Categoria
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function setUpdatedAt(DateTime $updatedAt)
+    public function setUpdatedAt(DateTime $updatedAt): Categoria
     {
         $this->updatedAt = $updatedAt;
         return $this;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
-    function onPrePersist()
-    {
-        $this->updatedAt = new DateTime;
-    }
 
-    function setProtegida($protegida)
+    function setProtegida(bool $protegida): Categoria
     {
         $this->protegida = $protegida;
         return $this;
@@ -163,9 +152,9 @@ class Categoria
      *
      * @return boolean
      */
-    public function isProtegida()
+    public function isProtegida(): bool
     {
-        return $this->protegida;
+        return (bool)$this->protegida;
     }
 
     public function __toString()
@@ -173,14 +162,14 @@ class Categoria
         return "{$this->nombre}";
     }
 
-    public function isPublicada()
+    public function isPublicada(): bool
     {
-        return $this->publicada;
+        return (bool)$this->publicada;
     }
 
-    public function isDestacada()
+    public function isDestacada(): bool
     {
-        return $this->destacada;
+        return (bool)$this->destacada;
     }
 
     public function getUrl()

@@ -8,5 +8,6 @@ return [
     'destroy_success' => 'Categoría eliminada exitosamente',
     'not_found' => 'Categoría inexistente',
     'not_allowed' => 'No cuenta con permisos para elminar esta Categoría',
-    'fail_unique_title_violation' => 'Ya existe una categoría con el mismo nombre.'
+    'fail_unique_title_violation' => 'Ya existe una categoría con el mismo nombre.',
+    'cannot_delete_contains_publicaciones' => 'No puede eliminar una categoría que esta asignada a publicaciones.',
 ];

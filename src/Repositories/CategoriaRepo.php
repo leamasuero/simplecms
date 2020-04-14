@@ -98,8 +98,8 @@ class CategoriaRepo
             ->setParameters([
                 'nombre' => $categoria->getNombre(),
                 'slug' => $categoria->getSlug(),
-                'destacada' => (int)$categoria->getDestacada(),
-                'publicada' => (int)$categoria->getPublicada(),
+                'destacada' => (int)$categoria->isDestacada(),
+                'publicada' => (int)$categoria->isPublicada(),
                 'protegida' => (int)$categoria->isProtegida(),
                 'created_at' => $categoria->getCreatedAt()->format('Y-m-d'),
                 'updated_at' => date('Y-m-d H:i:s'),
@@ -123,8 +123,8 @@ class CategoriaRepo
                 'id' => $categoria->getId(),
                 'nombre' => $categoria->getNombre(),
                 'slug' => $categoria->getSlug(),
-                'destacada' => (int)$categoria->getDestacada(),
-                'publicada' => (int)$categoria->getPublicada(),
+                'destacada' => (int)$categoria->isDestacada(),
+                'publicada' => (int)$categoria->isPublicada(),
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
 

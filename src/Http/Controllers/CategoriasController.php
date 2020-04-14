@@ -126,12 +126,18 @@ class CategoriasController extends Controller
 
             $this->categoriasService->eliminar($categoria);
             flash(trans('Lebenlabs/SimpleCMS::categorias.destroy_success'))->success();
+            return redirect()->route('simplecms.categorias.index');
 
+        } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException $e) {
+
+            flash(trans('Lebenlabs/SimpleCMS::categorias.cannot_delete_contains_publicaciones'))->error();
+            return redirect()->route('simplecms.categorias.index');
         } catch (Exception $ex) {
+
             flash($ex->getMessage())->error();
+            return redirect()->route('simplecms.categorias.index');
         }
 
-        return redirect()->route('simplecms.categorias.index');
     }
 
     public function create()

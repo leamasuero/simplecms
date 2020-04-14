@@ -27,8 +27,10 @@ class CreatePublicacionesTable extends Migration
             $table->boolean('notificable');
             $table->timestamp('fecha_publicacion');
             $table->timestamp('notificada_at')->nullable();
-            $table->unsignedBigInteger('categoria_id')->references('id')->on('simplecms_categorias');
+            $table->unsignedBigInteger('categoria_id');
             $table->timestamps();
+
+            $table->foreign('categoria_id')->references('id')->on('simplecms_categorias');
         });
     }
 
@@ -39,6 +41,10 @@ class CreatePublicacionesTable extends Migration
      */
     public function down()
     {
+        Schema::table('simplecms_publicaciones', function (Blueprint $table) {
+            $table->dropForeign('simplecms_publicaciones_categoria_id_foreign');
+        });
+
         Schema::dropIfExists('simplecms_publicaciones');
     }
 }

@@ -14,14 +14,14 @@
     <div class="form-group row ">
         <label class="col-md-2 control-label text-right" for="destacada">Destacada</label>
         <div class="input-group col-md-9">
-            {!! checkbox('destacada', '1', old('destacada', $categoria->isDestacada()), ['id' => 'destacada']) !!}
+            {!! \Lebenlabs\Html\Form\Checkbox::create('destacada', 1, old('destacada', $categoria->isDestacada()))->id('destacada')->render() !!}
         </div>
     </div>
 
     <div class="form-group row ">
         <label class="col-md-2 control-label text-right" for="publicada">Publicada</label>
         <div class="input-group col-md-9">
-            {!! checkbox('publicada', '1', old('publicada', $categoria->isPublicada()), ['id' => 'publicada']) !!}
+            {!! \Lebenlabs\Html\Form\Checkbox::create('publicada', 1, old('publicada', $categoria->isPublicada()))->id('publicada')->render() !!}
         </div>
     </div>
 

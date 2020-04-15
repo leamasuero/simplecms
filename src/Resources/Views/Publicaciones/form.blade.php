@@ -27,7 +27,7 @@
         <label class="col-md-2 control-label text-right" for="categoria">Categoría</label>
         <div class="input-group col-md-9">
             <div class="form-group col-lg-12">
-                {!! select('categoria', ['' => 'Seleccionar...'] + $categorias, old('categoria', optional($publicacion->getCategoria())->getId()), ['class' => 'form-control']) !!}
+                {!! \Lebenlabs\Html\Form\Select::create('categoria', ['' => 'Seleccionar...'] + $categorias)->class('form-control')->selected(old('categoria', optional($publicacion->getCategoria())->getId()))->render() !!}
                 @if($errors->has('categoria'))
                     {!! $errors->first('categoria', '<br/><small class="control-label text-right">:message</small>') !!}
                 @endif
@@ -50,21 +50,21 @@
     <div class="form-group row ">
         <label class="col-md-2 control-label text-right" for="destacada">Destacada</label>
         <div class="input-group col-md-9">
-            {!! checkbox('destacada', '1', old('destacada', $publicacion->isDestacada()), ['id' => 'destacada']) !!}
+            {!! \Lebenlabs\Html\Form\Checkbox::create('destacada', 1, old('destacada', $publicacion->isDestacada()))->id('destacada')->render() !!}
         </div>
     </div>
 
     <div class="form-group row">
         <label class="col-md-2 control-label text-right" for="privada">Privada</label>
         <div class="col-md-10">
-            {!! checkbox('privada', '1', old('privada', $publicacion->isPrivada()), ['id' => 'privada']) !!}
+            {!! \Lebenlabs\Html\Form\Checkbox::create('privada', 1, old('privada', $publicacion->isPrivada()))->id('privada')->render() !!}
         </div>
     </div>
 
     <div class="form-group row">
         <label class="col-md-2 control-label text-right" for="publicada">Publicada</label>
         <div class="input-group col-md-9">
-            {!! checkbox('publicada', '1', old('publicada', $publicacion->isPublicada()), ['id' => 'publicada']) !!}
+            {!! \Lebenlabs\Html\Form\Checkbox::create('publicada', 1, old('publicada', $publicacion->isPublicada()))->id('publicada')->render() !!}
         </div>
     </div>
 
@@ -83,7 +83,7 @@
                     </small>
                 </div>
             @else
-                {!! checkbox('notificable', '1', old('notificable', $publicacion->isNotificable()), ['id' => 'notificable']) !!}
+                {!! \Lebenlabs\Html\Form\Checkbox::create('notificable', 1, old('notificable', $publicacion->isNotificable()))->id('notificable')->render() !!}
                 <div class="ml-3">
                     <small class="form-text text-muted">
                         De ser notificable, la publicación será notificada a los profesionales vía mail pasado

@@ -16,7 +16,7 @@
         "pagerfanta/pagerfanta": "^2.1",
         "laracasts/flash": "^3.0",
         "lebenlabs/html": "1.0.*",
-        "lebenlabs/simplestorage": "1.0.*"
+        "lebenlabs/simplestorage": "2.0.*"
     },
     "require-dev": {
         "phpunit/phpunit": "~7.0",

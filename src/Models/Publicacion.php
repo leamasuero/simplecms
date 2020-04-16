@@ -115,7 +115,7 @@ class Publicacion implements Shareable, Storable
         return $this->titulo;
     }
 
-    private function setSlug($titulo): Publicacion
+    private function setSlug(?string $titulo = ''): Publicacion
     {
         $this->slug = Str::slug($titulo);
         return $this;

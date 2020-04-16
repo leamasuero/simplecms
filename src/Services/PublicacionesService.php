@@ -5,6 +5,7 @@ namespace Lebenlabs\SimpleCMS\Services;
 use Lebenlabs\SimpleCMS\Models\Publicacion;
 use Lebenlabs\SimpleCMS\Repositories\PublicacionRepo;
 use Lebenlabs\SimpleStorage\Services\SimpleStorageService;
+use Pagerfanta\PagerfantaInterface;
 
 class PublicacionesService
 {
@@ -25,27 +26,27 @@ class PublicacionesService
         $this->simpleStorageService = $simpletStorageService;
     }
 
-    public function buscarPublicadas(?string $q = null): iterable
+    public function buscarPublicadas(?string $q = null): PagerfantaInterface
     {
         return $this->publicacionRepo->buscar($q, ['publicada' => 1]);
     }
 
-    public function buscar(?string $q = null, array $criteria = []): iterable
+    public function buscar(?string $q = null, array $criteria = []): PagerfantaInterface
     {
         return $this->publicacionRepo->buscar($q, $criteria);
     }
 
-    public function buscarPrivadas(?string $q = null): iterable
+    public function buscarPrivadas(?string $q = null): PagerfantaInterface
     {
         return $this->publicacionRepo->buscar($q, ['privada' => 1]);
     }
 
-    public function buscarPrivadasPublicadas(?string $q = null): iterable
+    public function buscarPrivadasPublicadas(?string $q = null): PagerfantaInterface
     {
         return $this->publicacionRepo->buscar($q, ['privada' => 1, 'publicada' => 1]);
     }
 
-    public function buscarDestacadas(?string $q = null, array $criteria = ['destacada' => 1, 'privada' => 0, 'publicada' => 1]): iterable
+    public function buscarDestacadas(?string $q = null, array $criteria = ['destacada' => 1, 'privada' => 0, 'publicada' => 1]): PagerfantaInterface
     {
         return $this->publicacionRepo->buscar($q, $criteria);
     }

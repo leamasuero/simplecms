@@ -8,6 +8,7 @@ use Lebenlabs\SimpleCMS\Transformers\PublicacionTransformer;
 use Lebenlabs\SimpleCMS\Models\Publicacion;
 use Lebenlabs\SimpleCMS\Models\Categoria;
 use Pagerfanta\Pagerfanta;
+use Pagerfanta\PagerfantaInterface;
 
 class PublicacionRepo
 {
@@ -32,7 +33,7 @@ class PublicacionRepo
      * @param array $criteria
      * @return Pagerfanta
      */
-    public function buscar(?string $q = null, array $criteria = [])
+    public function buscar(?string $q = null, array $criteria = []): PagerfantaInterface
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('Publicacion.*', 'Categoria.id as categoria_id', 'Categoria.nombre as categoria_nombre')
@@ -213,7 +214,7 @@ class PublicacionRepo
         return $this->publicacionTransformer->transformCollection($st->fetchAll());
     }
 
-    public function buscarPublicadasByCategoriaSlug(string $slug): array
+    public function buscarPublicadasByCategoriaSlug(string $slug): PagerfantaInterface
     {
         $qb = $this->connection->createQueryBuilder();
         $qb->select('Publicacion.*', 'Categoria.id as categoria_id', 'Categoria.nombre as categoria_nombre')

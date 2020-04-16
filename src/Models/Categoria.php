@@ -122,7 +122,7 @@ class Categoria
         return $this;
     }
 
-    private function setSlug(string $nombre): Categoria
+    private function setSlug(?string $nombre = ''): Categoria
     {
         $this->slug = Str::slug($nombre);
         return $this;

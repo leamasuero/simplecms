@@ -104,4 +104,9 @@ class PublicacionesService
     {
         return $this->publicacionRepo->findPublicadasNotificablesPendientesByFechaPublicacion($fechaPublicacion);
     }
+
+    public function countPublicacionesRecientes(\DateTime $desde): int
+    {
+        return $this->publicacionRepo->countPublicacionesRecientes($desde)['count'];
+    }
 }

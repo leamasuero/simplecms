@@ -233,5 +233,16 @@ class PublicacionRepo
 
     }
 
+    public function countPublicacionesRecientes(\DateTime $desde): array
+    {
+        $qb = $this->connection->createQueryBuilder();
+        $qb->select('count(*) as count')
+            ->from(Publicacion::$tabla, 'Publicacion')
+            ->where('Publicacion.fecha_publicacion >= :desde')
+            ->andWhere('Publicacion.publicada = 1')
+            ->setParameter(':desde', $desde->format('Y-m-d 00:00:00'));
 
+        $st = $qb->execute();
+        return $st->fetch();
+    }
 }

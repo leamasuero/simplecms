@@ -197,7 +197,7 @@ class Publicacion implements Shareable, Storable
 
     public function getFechaPublicacion(): ?DateTime
     {
-        return $this->fechaPublicacion;
+        return clone $this->fechaPublicacion;
     }
 
     public function getCreatedAt(): DateTime

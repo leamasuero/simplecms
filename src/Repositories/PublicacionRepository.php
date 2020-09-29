@@ -21,7 +21,7 @@ class PublicacionRepository extends EntityRepository
     {
         return $this->buscar($q, $perPage, true, false);
     }
-    
+
     /**
      * @param $q
      * @param bool $privada
@@ -74,7 +74,7 @@ class PublicacionRepository extends EntityRepository
      * @param int $perPage
      * @return LengthAwarePaginator
      */
-    public function buscarPublicacionesByCategoriaSlug($slug, $perPage = 10)
+    public function buscarPublicacionesByCategoriaSlug($slug, $perPage = 10, $privada = null)
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('Publicacion')
@@ -83,6 +83,14 @@ class PublicacionRepository extends EntityRepository
             ->where('Categoria.slug = :slug')
             ->setParameter('slug', $slug)
             ->orderBy('Publicacion.id', 'desc');
+
+
+        if ($privada !== null) {
+            $qb->andWhere('Publicacion.privada = :privada')
+                ->setParameter('privada', $privada);
+        } else {
+            $qb->andWhere('Publicacion.privada = 0');
+        }
 
         return $this->paginate($qb->getQuery(), $perPage);
     }
@@ -101,7 +109,7 @@ class PublicacionRepository extends EntityRepository
             ->from(Publicacion::class, 'Publicacion')
             ->where('Publicacion.destacada = true')
             ->andWhere('Publicacion.publicada = true')
-            ->andWhere('Publicacion.privada = false')
+            ->andWhere('Publicacion.privada = 0')
             ->orderBy('Publicacion.id', 'desc');
 
         return $this->paginate($qb->getQuery(), $perPage);

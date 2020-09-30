@@ -250,7 +250,7 @@ class PublicacionesController extends Controller
         }
 
         $publicacionesFrontendLimit =  config('simplecms.publicaciones.frontend.indexByCategoryLimit', 5);
-        $publicaciones = $this->simpleCMSProvider->buscarPublicacionesByCategoriaSlug($slug, $publicacionesFrontendLimit);
+        $publicaciones = $this->simpleCMSProvider->buscarPublicacionesByCategoriaSlug($slug, [], $publicacionesFrontendLimit);
         $categorias = $this->simpleCMSProvider->findAllCategoriasPublicadasIndexed();
 
         return view('Lebenlabs/SimpleCMS::Publicaciones.public-index-by-categoria-slug', compact('publicaciones', 'categorias', 'categoria'));

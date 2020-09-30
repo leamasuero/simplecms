@@ -305,13 +305,14 @@ class SimpleCMS
     }
 
     /**
-     * @param $slug
+     * @param string $slug
+     * @param array $criteria
      * @param int $perPage
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function buscarPublicacionesByCategoriaSlug($slug, $perPage = 20)
+    public function buscarPublicacionesByCategoriaSlug($slug, $criteria = [], $perPage = 20)
     {
-        return $this->publicacionesService->buscarPublicacionesByCategoriaSlug($slug, $perPage);
+        return $this->publicacionesService->buscarPublicacionesByCategoriaSlug($slug, $criteria, $perPage);
     }
 
 

@@ -74,7 +74,7 @@ class PublicacionRepository extends EntityRepository
      * @param int $perPage
      * @return LengthAwarePaginator
      */
-    public function buscarPublicacionesByCategoriaSlug($slug, $perPage = 10, $privada = null)
+    public function buscarPublicacionesByCategoriaSlug($slug, $criteria = [], $perPage = 10)
     {
         $qb = $this->_em->createQueryBuilder();
         $qb->select('Publicacion')
@@ -84,12 +84,15 @@ class PublicacionRepository extends EntityRepository
             ->setParameter('slug', $slug)
             ->orderBy('Publicacion.id', 'desc');
 
+        $criteriaFiltrada = array_filter($criteria, function ($value, $key) {
+            // filtro todos los criterios que sean validos (esten en el array) y que no sean nulos
+            return !is_null($value) && in_array($key, ['privada', 'publicada']);
+        }, ARRAY_FILTER_USE_BOTH);
 
-        if ($privada !== null) {
-            $qb->andWhere('Publicacion.privada = :privada')
-                ->setParameter('privada', $privada);
-        } else {
-            $qb->andWhere('Publicacion.privada = 0');
+
+        foreach ($criteriaFiltrada as $k => $value) {
+            $qb->andWhere("Publicacion.{$k} = :{$k}")
+                ->setParameter($k, $value);
         }
 
         return $this->paginate($qb->getQuery(), $perPage);

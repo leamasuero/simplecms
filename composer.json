@@ -15,7 +15,7 @@
         "pagerfanta/pagerfanta": "*",
         "laracasts/flash": "*",
         "lebenlabs/html": "*",
-        "lebenlabs/simplestorage": "2.0.*"
+        "lebenlabs/simplestorage": "3.0.*"
     },
     "autoload": {
         "psr-4": {
